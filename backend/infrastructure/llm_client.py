@@ -23,16 +23,13 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import os
 
 from openai import AsyncOpenAI, APIError
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
-from config.settings import settings
+from config.settings import settings as _settings
 
 log = logging.getLogger(__name__)
-
-from config.settings import settings as _settings
 LLM_CALL_TIMEOUT_SECONDS  = _settings.LLM_CALL_TIMEOUT_SECONDS
 LLM_MAX_CONCURRENT_CALLS  = _settings.LLM_MAX_CONCURRENT_CALLS
 
@@ -44,7 +41,7 @@ class LLMClient:
     """
 
     def __init__(self) -> None:
-        if not settings.LOCAL_LLM_BASE_URL:
+        if not _settings.LOCAL_LLM_BASE_URL:
             raise RuntimeError(
                 "LOCAL_LLM_BASE_URL is not set.\n"
                 "Add to .env:\n"
@@ -57,15 +54,15 @@ class LLMClient:
                 "    --dtype bfloat16 --max-model-len 8192"
             )
 
-        self.model = settings.LOCAL_LLM_MODEL
+        self.model = _settings.LOCAL_LLM_MODEL
         self._client = AsyncOpenAI(
-            base_url=settings.LOCAL_LLM_BASE_URL,
-            api_key=settings.LOCAL_LLM_API_KEY,
+            base_url=_settings.LOCAL_LLM_BASE_URL,
+            api_key=_settings.LOCAL_LLM_API_KEY,
         )
         self._semaphore = asyncio.Semaphore(LLM_MAX_CONCURRENT_CALLS)
         log.info(
             "LLMClient → %s  model=%s  max_concurrent=%d",
-            settings.LOCAL_LLM_BASE_URL, self.model, LLM_MAX_CONCURRENT_CALLS,
+            _settings.LOCAL_LLM_BASE_URL, self.model, LLM_MAX_CONCURRENT_CALLS,
         )
 
     @retry(
