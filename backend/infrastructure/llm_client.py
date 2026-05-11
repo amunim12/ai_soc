@@ -10,13 +10,20 @@ and LOCAL_LLM_MODEL in .env — no code change required.
     LOCAL_LLM_BASE_URL=http://localhost:8001/v1
     LOCAL_LLM_MODEL=Qwen/Qwen2.5-72B-Instruct-AWQ
 
-Start vLLM (2× A100 80 GB, tensor parallel):
+Start vLLM (2× A100 80 GB, AWQ INT4 quantized):
     docker run --runtime nvidia --gpus all \
       -p 8001:8000 vllm/vllm-openai:latest \
       --model Qwen/Qwen2.5-72B-Instruct-AWQ \
+      --dtype float16 \
+      --quantization awq \
+      --kv-cache-dtype fp8_e5m2 \
       --tensor-parallel-size 2 \
       --max-model-len 32768 \
-      --max-num-seqs 64
+      --max-num-seqs 64 \
+      --gpu-memory-utilization 0.90 \
+      --enable-chunked-prefill
+
+Or use the script:  bash scripts/start_vllm.sh
 
 Parallelism: up to LLM_MAX_CONCURRENT_CALLS in-flight at once so vLLM's
 server-side continuous batcher can fuse them into a single forward pass.
@@ -48,12 +55,9 @@ class LLMClient:
                 "LOCAL_LLM_BASE_URL is not set.\n"
                 "Add to .env:\n"
                 "  LOCAL_LLM_BASE_URL=http://localhost:8001/v1\n"
-                "  LOCAL_LLM_MODEL=meta-llama/Llama-3.3-70B-Instruct\n"
+                "  LOCAL_LLM_MODEL=Qwen/Qwen2.5-72B-Instruct-AWQ\n"
                 "Then start vLLM:\n"
-                "  docker run --runtime nvidia --gpus all \\\n"
-                "    -p 8001:8000 vllm/vllm-openai:latest \\\n"
-                "    --model meta-llama/Llama-3.3-70B-Instruct \\\n"
-                "    --dtype bfloat16 --max-model-len 8192"
+                "  bash backend/scripts/start_vllm.sh"
             )
 
         self.model = _settings.LOCAL_LLM_MODEL
