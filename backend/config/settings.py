@@ -120,7 +120,7 @@ class Settings(BaseSettings):
 
     LOCAL_LLM_BASE_URL:     Optional[str] = None
 
-    LOCAL_LLM_MODEL:        str  = "hugging-quants/Meta-Llama-3.3-70B-Instruct-AWQ-INT4"
+    LOCAL_LLM_MODEL:        str  = "Qwen/Qwen2.5-72B-Instruct-AWQ"
 
     LOCAL_LLM_API_KEY:      str  = "local-vllm-key"
 

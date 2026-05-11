@@ -2,22 +2,24 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """
-LLM client — OpenAI-compatible backend.
+LLM client — vLLM OpenAI-compatible backend.
 
-Speaks to any OpenAI-compatible server: vLLM, Ollama, SGLang, TGI, LM Studio.
-Swap backends by changing LOCAL_LLM_BASE_URL in .env — no code change.
+Speaks to a local vLLM server. Swap models by changing LOCAL_LLM_BASE_URL
+and LOCAL_LLM_MODEL in .env — no code change required.
 
-Examples:
-    # vLLM on GPU (production; continuous batching, 50–150 EPS on LLM path)
     LOCAL_LLM_BASE_URL=http://localhost:8001/v1
-    LOCAL_LLM_MODEL=meta-llama/Llama-3.3-70B-Instruct
+    LOCAL_LLM_MODEL=Qwen/Qwen2.5-72B-Instruct-AWQ
 
-    # Ollama on CPU (dev; ~0.8 EPS on LLM path)
-    LOCAL_LLM_BASE_URL=http://localhost:11434/v1
-    LOCAL_LLM_MODEL=qwen2.5:3b
+Start vLLM (2× A100 80 GB, tensor parallel):
+    docker run --runtime nvidia --gpus all \
+      -p 8001:8000 vllm/vllm-openai:latest \
+      --model Qwen/Qwen2.5-72B-Instruct-AWQ \
+      --tensor-parallel-size 2 \
+      --max-model-len 32768 \
+      --max-num-seqs 64
 
 Parallelism: up to LLM_MAX_CONCURRENT_CALLS in-flight at once so vLLM's
-server-side batcher can fuse them into a single forward pass.
+server-side continuous batcher can fuse them into a single forward pass.
 """
 from __future__ import annotations
 
@@ -92,8 +94,6 @@ class LLMClient:
                     ],
                     max_tokens=max_tokens,
                     temperature=temperature,
-
-                    extra_body={"options": {"num_ctx": 2048}},
                 ),
                 timeout=LLM_CALL_TIMEOUT_SECONDS,
             )
