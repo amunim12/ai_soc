@@ -78,3 +78,17 @@ def test_llm_client_reads_concurrency_from_settings(monkeypatch):
 
     assert llm_module.LLM_MAX_CONCURRENT_CALLS == 7
     assert llm_module.LLM_CALL_TIMEOUT_SECONDS == 5.0
+
+
+def test_bridge_reads_poll_settings_from_settings(monkeypatch):
+    monkeypatch.setenv("WAZUH_POLL_INTERVAL", "2")
+    monkeypatch.setenv("WAZUH_BATCH_SIZE", "500")
+
+    import importlib
+    import config.settings as settings_mod
+    importlib.reload(settings_mod)
+    import bridge.wazuh_kafka_bridge as bridge_module
+    importlib.reload(bridge_module)
+
+    assert bridge_module.POLL_INTERVAL_SECONDS == 2
+    assert bridge_module.BATCH_SIZE == 500
