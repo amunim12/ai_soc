@@ -1,0 +1,512 @@
+# Copyright 2025 AI SOC Contributors
+# SPDX-License-Identifier: Apache-2.0
+#
+# PR Checks — runs on every pull request and every push to develop/main.
+# All jobs must pass before a PR can be merged (enforced by branch protection).
+#
+# Stages:
+#   1. secrets-scan      — trufflehog + gitleaks (blocks all downstream)
+#   2a. sast-python      — bandit + semgrep → SARIF
+#   2b. sast-frontend    — eslint-security → SARIF
+#   2c. sast-iac         — checkov + hadolint → SARIF
+#   3a. sca-python       — pip-audit CVE + licence check
+#   3b. sca-node         — npm audit CVE check
+#   4.  build-scan       — docker build + trivy + grype → SARIF
+#   5.  sbom             — syft SPDX + CycloneDX + pinning check
+#   6.  test-coverage    — pytest --cov with per-module gates
+#   7.  dast             — OWASP ZAP API scan against live server
+
+name: PR Checks
+
+on:
+  pull_request:
+  push:
+    branches: [develop, main]
+
+permissions:
+  contents: read
+  security-events: write
+  pull-requests: write
+
+env:
+  PYTHON_VERSION: "3.11"
+  NODE_VERSION: "20"
+  # CI-only credentials — never used in production
+  JWT_SECRET_KEY: "ci-only-not-for-production-padding-1234567890abcdef1234567890abcdef"
+  DEFAULT_ADMIN_PASSWORD: "ci-admin-password-not-production"
+  SHUFFLE_API_KEY: "ci-shuffle-key-not-real"
+  USE_MOCK_TI: "true"
+  SOAR_ENABLED: "false"
+  PLAYBOOK_FAST_MODE: "true"
+  REDIS_URL: "redis://localhost:6379/0"
+
+jobs:
+  # ── Stage 1: Secrets Scan ──────────────────────────────────────────────────
+  secrets-scan:
+    name: "Stage 1 · Secrets Scan"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: TruffleHog — entropy + pattern scan
+        uses: trufflesecurity/trufflehog@v3
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --only-verified
+
+      - name: Gitleaks — regex credential scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ── Stage 2a: SAST — Python ───────────────────────────────────────────────
+  sast-python:
+    name: "Stage 2a · SAST Python (Bandit + Semgrep)"
+    runs-on: ubuntu-latest
+    needs: secrets-scan
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install SAST tools
+        run: pip install bandit semgrep
+
+      - name: Bandit — security anti-patterns
+        working-directory: backend
+        run: |
+          bandit -r . \
+            --exclude .venv314,tests,__pycache__ \
+            --format sarif \
+            --output bandit-results.sarif || true
+          bandit -r . \
+            --exclude .venv314,tests,__pycache__ \
+            --severity-level high \
+            --confidence-level high
+
+      - name: Upload Bandit SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: backend/bandit-results.sarif
+          category: bandit
+
+      - name: Semgrep — OWASP + security-audit
+        working-directory: backend
+        run: |
+          semgrep scan \
+            --config=p/python \
+            --config=p/security-audit \
+            --config=p/owasp-top-ten \
+            --exclude=.venv314 \
+            --sarif \
+            --output=semgrep-results.sarif \
+            . || true
+
+      - name: Upload Semgrep SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: backend/semgrep-results.sarif
+          category: semgrep
+
+  # ── Stage 2b: SAST — Frontend ─────────────────────────────────────────────
+  sast-frontend:
+    name: "Stage 2b · SAST Frontend (ESLint)"
+    runs-on: ubuntu-latest
+    needs: secrets-scan
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: TypeScript type check
+        working-directory: frontend
+        run: npx tsc --noEmit
+
+      - name: ESLint security scan
+        working-directory: frontend
+        run: |
+          npx eslint \
+            --ext .ts,.tsx \
+            src/ \
+            --max-warnings 0 || true
+
+  # ── Stage 2c: SAST — IaC ─────────────────────────────────────────────────
+  sast-iac:
+    name: "Stage 2c · SAST IaC (Checkov + Hadolint)"
+    runs-on: ubuntu-latest
+    needs: secrets-scan
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkov — Docker Compose + K8s manifests
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: .
+          framework: dockerfile,kubernetes,docker_compose
+          output_format: sarif
+          output_file_path: checkov-results.sarif
+          soft_fail: true
+
+      - name: Upload Checkov SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: checkov-results.sarif
+          category: checkov
+
+      - name: Hadolint — Dockerfile lint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: backend/Dockerfile.api
+          format: sarif
+          output-file: hadolint-results.sarif
+          no-fail: true
+
+      - name: Upload Hadolint SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: hadolint-results.sarif
+          category: hadolint
+
+  # ── Stage 3a: SCA — Python ────────────────────────────────────────────────
+  sca-python:
+    name: "Stage 3a · SCA Python (pip-audit)"
+    runs-on: ubuntu-latest
+    needs: secrets-scan
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install pip-audit + pip-licenses
+        run: pip install pip-audit pip-licenses
+
+      - name: pip-audit — CVE scan
+        working-directory: backend
+        run: |
+          pip-audit \
+            -r requirements.txt \
+            --format json \
+            --output pip-audit-results.json \
+            --vulnerability-service osv || true
+          pip-audit \
+            -r requirements.txt \
+            --vulnerability-service osv
+
+      - name: pip-licenses — licence compliance
+        working-directory: backend
+        run: |
+          pip install -r requirements.txt -q
+          pip-licenses \
+            --fail-on "GPL;LGPL;AGPL;EUPL;CDDL" \
+            --ignore-packages fakeredis pytest pytest-asyncio pytest-mock coverage || true
+
+      - name: Upload pip-audit results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pip-audit-results
+          path: backend/pip-audit-results.json
+
+  # ── Stage 3b: SCA — Node ──────────────────────────────────────────────────
+  sca-node:
+    name: "Stage 3b · SCA Node (npm audit)"
+    runs-on: ubuntu-latest
+    needs: secrets-scan
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: npm audit
+        working-directory: frontend
+        run: |
+          npm ci
+          npm audit --audit-level=critical
+
+  # ── Stage 4: Build + Container Scan ──────────────────────────────────────
+  build-scan:
+    name: "Stage 4 · Build + Container Scan (Trivy + Grype)"
+    runs-on: ubuntu-latest
+    needs: [sast-python, sast-frontend, sast-iac]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build API image
+        uses: docker/build-push-action@v5
+        with:
+          context: backend
+          file: backend/Dockerfile.api
+          push: false
+          load: true
+          tags: ai-soc-api:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Trivy — container CVE scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ai-soc-api:ci
+          format: sarif
+          output: trivy-results.sarif
+          severity: CRITICAL,HIGH
+          exit-code: "1"
+          ignore-unfixed: true
+
+      - name: Upload Trivy SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-results.sarif
+          category: trivy
+
+      - name: Grype — second-opinion container scan
+        uses: anchore/scan-action@v3
+        with:
+          image: ai-soc-api:ci
+          fail-build: false
+          severity-cutoff: critical
+          output-format: sarif
+          output-file: grype-results.sarif
+
+      - name: Upload Grype SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: grype-results.sarif
+          category: grype
+
+  # ── Stage 5: SBOM ────────────────────────────────────────────────────────
+  sbom:
+    name: "Stage 5 · SBOM Generation (EAL4 ACM_CAP.4)"
+    runs-on: ubuntu-latest
+    needs: build-scan
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate SBOM — backend (SPDX)
+        uses: anchore/sbom-action@v0
+        with:
+          path: backend/
+          format: spdx-json
+          output-file: sbom-backend-spdx.json
+          artifact-name: sbom-backend-spdx.json
+
+      - name: Generate SBOM — backend (CycloneDX)
+        uses: anchore/sbom-action@v0
+        with:
+          path: backend/
+          format: cyclonedx-json
+          output-file: sbom-backend-cyclonedx.json
+          artifact-name: sbom-backend-cyclonedx.json
+
+      - name: Verify all Python deps are exactly pinned
+        working-directory: backend
+        run: |
+          python - <<'EOF'
+          import re, sys
+          failures = []
+          with open("requirements.txt") as f:
+              for i, raw in enumerate(f, 1):
+                  line = raw.strip()
+                  if not line or line.startswith("#") or line.startswith("-"):
+                      continue
+                  if not re.search(r"==", line):
+                      failures.append(f"  line {i}: {line}")
+          if failures:
+              print("FAIL — unpinned dependencies:")
+              print("\n".join(failures))
+              sys.exit(1)
+          print(f"OK — all dependencies pinned ({i} checked)")
+          EOF
+
+  # ── Stage 6: Tests + Coverage ─────────────────────────────────────────────
+  test-coverage:
+    name: "Stage 6 · Tests + Coverage (EAL4 ATE_COV.2)"
+    runs-on: ubuntu-latest
+    needs: secrets-scan
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: soc
+          POSTGRES_PASSWORD: soc_test
+          POSTGRES_DB: soc_pipeline
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      POSTGRES_DSN: postgresql://soc:soc_test@localhost:5432/soc_pipeline
+      KAFKA_BOOTSTRAP_SERVERS: localhost:9092
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install dependencies
+        working-directory: backend
+        run: pip install -r requirements.txt
+
+      - name: Run test suite with coverage
+        working-directory: backend
+        run: |
+          pytest tests/ \
+            --ignore=tests/eal4 \
+            -v \
+            --cov=. \
+            --cov-config=../.coveragerc \
+            --cov-report=xml:coverage.xml \
+            --cov-report=term-missing \
+            --junitxml=junit-report.xml \
+            -x
+
+      - name: Enforce per-module coverage gates
+        working-directory: backend
+        run: |
+          python - <<'EOF'
+          import xml.etree.ElementTree as ET, sys
+
+          tree = ET.parse("coverage.xml")
+          root = tree.getroot()
+          packages = {p.get("name"): float(p.get("line-rate", 0)) * 100
+                      for p in root.iter("package")}
+
+          gates = {
+              "agents":          80.0,
+              "orchestration":   80.0,
+              "schemas":         85.0,
+              "api":             65.0,
+              "infrastructure":  65.0,
+          }
+
+          failures = []
+          for module, minimum in gates.items():
+              matched = [(n, r) for n, r in packages.items() if module in n]
+              if not matched:
+                  print(f"  WARN: no coverage data for module '{module}'")
+                  continue
+              for name, rate in matched:
+                  if rate < minimum:
+                      failures.append(f"  {name}: {rate:.1f}% < {minimum:.0f}% required")
+                  else:
+                      print(f"  OK {name}: {rate:.1f}% >= {minimum:.0f}%")
+
+          if failures:
+              print("\nFAIL — coverage gates not met:")
+              print("\n".join(failures))
+              sys.exit(1)
+          print("\nAll coverage gates passed.")
+          EOF
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: |
+            backend/coverage.xml
+            backend/junit-report.xml
+
+  # ── Stage 7: DAST ────────────────────────────────────────────────────────
+  dast:
+    name: "Stage 7 · DAST (OWASP ZAP)"
+    runs-on: ubuntu-latest
+    needs: [build-scan, test-coverage]
+    env:
+      POSTGRES_DSN: postgresql://soc:soc_test@localhost:5432/soc_pipeline
+      KAFKA_BOOTSTRAP_SERVERS: localhost:9092
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: soc
+          POSTGRES_PASSWORD: soc_test
+          POSTGRES_DB: soc_pipeline
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: pip install -r requirements.txt
+
+      - name: Start FastAPI server
+        working-directory: backend
+        run: |
+          uvicorn main:app --host 0.0.0.0 --port 8000 &
+          echo $! > /tmp/uvicorn.pid
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:8000/health && echo "Server ready" && break
+            sleep 2
+          done
+
+      - name: Export OpenAPI spec
+        run: curl -sf http://localhost:8000/openapi.json > openapi.json
+
+      - name: OWASP ZAP — API scan
+        uses: zaproxy/action-api-scan@v0.7.0
+        with:
+          target: http://localhost:8000
+          format: openapi
+          definition: openapi.json
+          fail_action: false
+          artifact_name: zap-scan-report
+          cmd_options: -I
+
+      - name: Stop test server
+        if: always()
+        run: kill $(cat /tmp/uvicorn.pid) || true

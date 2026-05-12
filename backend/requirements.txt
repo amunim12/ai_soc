@@ -1,0 +1,82 @@
+# ─── Core Framework ────────────────────────────────────────────────────────
+langgraph==0.2.62
+langchain-core==0.3.28
+
+# ─── Local LLM Inference ───────────────────────────────────────────────────
+# openai SDK is used as the client for vLLM's OpenAI-compatible REST API.
+# vLLM itself CANNOT be pip-installed on Windows — run it in Docker or WSL2:
+#
+#   docker run --runtime nvidia --gpus all \
+#     -v ~/.cache/huggingface:/root/.cache/huggingface \
+#     -p 8001:8000 \
+#     vllm/vllm-openai:latest \
+#     --model meta-llama/Llama-3.3-70B-Instruct \
+#     --dtype bfloat16 \
+#     --max-model-len 8192 \
+#     --tensor-parallel-size 2
+#
+# Then set in .env:
+#   LOCAL_AI_ONLY=true
+#   LOCAL_LLM_BASE_URL=http://localhost:8001/v1
+#   LOCAL_LLM_MODEL=meta-llama/Llama-3.3-70B-Instruct
+openai>=1.54.0              # OpenAI-compatible client for vLLM API calls
+pydantic>=2.9.2
+pydantic-settings>=2.6.1
+
+# ─── Kafka ─────────────────────────────────────────────────────────────────
+confluent-kafka>=2.6.1
+
+# ─── Vector Store & Embeddings ─────────────────────────────────────────────
+chromadb>=0.5.23
+sentence-transformers>=3.3.1
+
+# ─── Async & HTTP ──────────────────────────────────────────────────────────
+aiohttp>=3.11.10
+httpx==0.28.1
+asyncio-throttle==1.0.2
+
+# ─── Redis ─────────────────────────────────────────────────────────────────
+redis==5.2.1
+fakeredis==2.26.2          # used in tests
+
+# ─── API ───────────────────────────────────────────────────────────────────
+fastapi==0.115.6
+python-multipart>=0.0.9
+uvicorn[standard]==0.32.1
+
+# ─── Database ──────────────────────────────────────────────────────────────
+aiosqlite==0.20.0
+asyncpg==0.31.0
+
+# ─── Notifications ─────────────────────────────────────────────────────────
+slack-sdk==3.33.5          # Slack webhook + Web API
+aiosmtplib==3.0.2          # async SMTP
+
+# ─── MITRE / Threat Intel ──────────────────────────────────────────────────
+stix2==3.0.1               # MITRE ATT&CK STIX parsing
+pymisp==2.5.1              # MISP client
+OTXv2==1.5.12              # AlienVault OTX
+shodan==1.31.0             # Shodan API
+nvdlib==0.7.6              # NVD CVE lookup
+geoip2==4.8.0              # MaxMind GeoIP2
+
+# ─── Utilities ─────────────────────────────────────────────────────────────
+python-dotenv==1.0.1
+pyyaml>=6.0.2
+orjson>=3.10.12
+tenacity==9.0.0            # retry logic
+structlog==24.4.0          # structured logging
+rich==13.9.4               # pretty terminal output
+
+# ─── Auth ──────────────────────────────────────────────────────────────────
+bcrypt==4.2.1
+python-jose[cryptography]==3.3.0
+
+# ─── RAG document ingestion ────────────────────────────────────────────────
+pymupdf==1.25.5            # PDF text extraction (PyMuPDF / fitz)
+python-docx==1.1.2         # DOCX text extraction
+
+# ─── Testing ───────────────────────────────────────────────────────────────
+pytest==8.3.4
+pytest-asyncio==0.24.0
+pytest-mock==3.14.0

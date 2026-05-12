@@ -1,0 +1,21 @@
+# CODEOWNERS — every PR touching these paths requires review from the security lead
+# Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything
+*                                   @amunim12
+
+# Security-critical paths — require security lead sign-off
+SECURITY.md                         @amunim12
+.github/workflows/                  @amunim12
+backend/infrastructure/auth_client.py  @amunim12
+backend/agents/hitl_agent.py        @amunim12
+backend/agents/supervisor.py        @amunim12
+backend/orchestration/graph.py      @amunim12
+backend/api/auth_api.py             @amunim12
+backend/tests/eal4/                 @amunim12
+deploy/                             @amunim12
+
+# Dependency changes — require security lead sign-off
+backend/requirements.txt            @amunim12
+frontend/package.json               @amunim12
+frontend/package-lock.json          @amunim12

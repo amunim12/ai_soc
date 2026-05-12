@@ -1,0 +1,103 @@
+# ─── Environment / secrets ────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.csr
+secrets/
+vault/
+
+# ─── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+pip-wheel-metadata/
+.venv/
+.venv*/
+venv/
+ENV/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+nosetests.xml
+pytest.xml
+
+# ─── Databases / runtime data ─────────────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+backend/data/*.db
+backend/data/*.mmdb
+backend/data/shuffle_workflow_ids.json
+data/
+
+# ─── Node / frontend ──────────────────────────────────────────────────────────
+node_modules/
+frontend/dist/
+frontend/out/
+frontend/release/
+frontend/.vite/
+*.tsbuildinfo
+
+# ─── Docker / container artefacts ────────────────────────────────────────────
+*.tar
+*.tar.gz
+docker-compose.override.yml
+
+# ─── IDE / editors ────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ─── Logs ─────────────────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ─── ML model weights (never commit — use vendored download) ─────────────────
+*.bin
+*.safetensors
+*.gguf
+*.ggml
+*.pt
+*.pth
+*.onnx
+models/
+model_cache/
+
+# ─── ChromaDB / vector store ──────────────────────────────────────────────────
+chroma_data/
+*.chroma
+
+# ─── Certificates ─────────────────────────────────────────────────────────────
+certs/
+ssl/
+tls/
+
+# ─── Vendor / offline bundles ─────────────────────────────────────────────────
+vendor/python/
+vendor/docker/
+*.whl
+
+.claude
+.mcp.json

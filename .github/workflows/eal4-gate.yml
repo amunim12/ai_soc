@@ -1,0 +1,89 @@
+# Copyright 2025 AI SOC Contributors
+# SPDX-License-Identifier: Apache-2.0
+#
+# EAL4 Compliance Gate — runs only on PRs targeting main.
+#
+# Verifies that the mandatory Common Criteria EAL4 controls are in place:
+#   ACM_CAP.4  — Configuration management capabilities
+#   ADV_FSP.2  — Security function specification
+#   ALC_LCD.2  — Life-cycle definition
+#   ATE_COV.2  — Test coverage of security functions
+#   AVA_VAN.2  — Vulnerability analysis
+#
+# This job BLOCKS merge to main if any EAL4 assertion fails.
+
+name: EAL4 Compliance Gate
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  PYTHON_VERSION: "3.11"
+  JWT_SECRET_KEY: "ci-only-not-for-production-padding-1234567890abcdef1234567890abcdef"
+  DEFAULT_ADMIN_PASSWORD: "ci-admin-password-not-production"
+  USE_MOCK_TI: "true"
+  SOAR_ENABLED: "false"
+  REDIS_URL: "redis://localhost:6379/0"
+
+jobs:
+  eal4-gate:
+    name: "EAL4 Compliance Gate (CC EAL4)"
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: pip install -r requirements.txt
+
+      - name: Run EAL4 compliance test suite
+        working-directory: backend
+        run: |
+          pytest tests/eal4/ \
+            -v \
+            --tb=short \
+            --junitxml=eal4-junit.xml \
+            -x
+
+      - name: Upload EAL4 test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eal4-compliance-report
+          path: backend/eal4-junit.xml
+
+      - name: Post EAL4 result to PR
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '## EAL4 Compliance Gate FAILED\n\n' +
+                    'One or more Common Criteria EAL4 controls are not met.\n\n' +
+                    'Check the [EAL4 test results](' + context.serverUrl + '/' +
+                    context.repo.owner + '/' + context.repo.repo +
+                    '/actions/runs/' + context.runId + ') for details.\n\n' +
+                    '**This PR cannot be merged until all EAL4 assertions pass.**'
+            })

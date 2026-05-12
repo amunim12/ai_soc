@@ -1,0 +1,60 @@
+version: 2
+
+updates:
+  # ── Python backend ──────────────────────────────────────────────────────────
+  - package-ecosystem: pip
+    directory: /backend
+    schedule:
+      interval: weekly
+      day: monday
+      time: "03:00"
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - security
+    reviewers:
+      - amunim12
+    commit-message:
+      prefix: "deps(backend)"
+    ignore:
+      # Only accept patch/minor security fixes — major version bumps need manual review
+      - dependency-name: "langgraph"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "langchain-core"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "fastapi"
+        update-types: ["version-update:semver-major"]
+
+  # ── Node / Electron frontend ────────────────────────────────────────────────
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: weekly
+      day: monday
+      time: "03:00"
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - security
+    reviewers:
+      - amunim12
+    commit-message:
+      prefix: "deps(frontend)"
+    ignore:
+      - dependency-name: "electron"
+        update-types: ["version-update:semver-major"]
+
+  # ── GitHub Actions ──────────────────────────────────────────────────────────
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "03:00"
+    labels:
+      - dependencies
+      - ci
+    reviewers:
+      - amunim12
+    commit-message:
+      prefix: "ci(actions)"
