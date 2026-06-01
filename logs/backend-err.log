@@ -1,0 +1,111 @@
+INFO:services.shuffle_client:ShuffleClient initialised \u2192 http://localhost:5001
+INFO:infrastructure.chroma_client:ChromaClient configured \u2192 localhost:8888 (server-side embeddings)
+INFO:     Started server process [10284]
+INFO:     Waiting for application startup.
+%5|1780293761.453|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10087ms, timeout #0)
+%4|1780293762.352|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10987ms in state APIVERSION_QUERY)
+%4|1780293762.882|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780293774.578|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10089ms, timeout #0)
+%4|1780293774.802|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10314ms in state APIVERSION_QUERY, 1 identical error(s) suppressed)
+%4|1780293775.204|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780293787.713|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10114ms, timeout #0)
+%4|1780293792.180|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780293802.886|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10105ms, timeout #0)
+%4|1780293808.625|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 15845ms in state APIVERSION_QUERY, 2 identical error(s) suppressed)
+%4|1780293808.798|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780293820.056|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10095ms, timeout #0)
+%4|1780293821.573|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780293837.246|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10114ms, timeout #0)
+%4|1780293844.985|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 17853ms in state APIVERSION_QUERY, 2 identical error(s) suppressed)
+%4|1780293846.004|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+ERROR:    Traceback (most recent call last):
+  File "D:\ai_soc\ai_soc\.venv\Lib\site-packages\asyncpg\connection.py", line 2443, in connect
+    return await connect_utils._connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<22 lines>...
+    )
+    ^
+  File "D:\ai_soc\ai_soc\.venv\Lib\site-packages\asyncpg\connect_utils.py", line 1218, in _connect
+    conn = await _connect_addr(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "D:\ai_soc\ai_soc\.venv\Lib\site-packages\asyncpg\connect_utils.py", line 1050, in _connect_addr
+    return await __connect_addr(params, False, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai_soc\ai_soc\.venv\Lib\site-packages\asyncpg\connect_utils.py", line 1102, in __connect_addr
+    await connected
+asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\ai_soc\ai_soc\.venv\Lib\site-packages\starlette\routing.py", line 693, in lifespan
+    async with self.lifespan_context(app) as maybe_state:
+               ~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Program Files\Python313\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai_soc\ai_soc\.venv\Lib\site-packages\fastapi\routing.py", line 133, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+               ~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Program Files\Python313\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai_soc\ai_soc\.venv\Lib\site-packages\fastapi\routing.py", line 133, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+               ~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Program Files\Python313\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai_soc\ai_soc\.venv\Lib\site-packages\fastapi\routing.py", line 133, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+               ~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Program Files\Python313\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai_soc\ai_soc\.venv\Lib\site-packages\fastapi\routing.py", line 133, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+               ~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Program Files\Python313\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai_soc\ai_soc\.venv\Lib\site-packages\fastapi\routing.py", line 133, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+               ~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Program Files\Python313\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai_soc\ai_soc\backend\main.py", line 62, in lifespan
+    await sqlite_client.initialise()
+  File "D:\ai_soc\ai_soc\backend\infrastructure\postgres_client.py", line 85, in initialise
+    self._pool = await asyncpg.create_pool(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self._dsn, min_size=self._min_pool, max_size=self._max_pool, ssl=False,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\ai_soc\ai_soc\.venv\Lib\site-packages\asyncpg\pool.py", line 439, in _async__init__
+    await self._initialize()
+  File "D:\ai_soc\ai_soc\.venv\Lib\site-packages\asyncpg\pool.py", line 476, in _initialize
+    await asyncio.gather(*connect_tasks)
+  File "D:\ai_soc\ai_soc\.venv\Lib\site-packages\asyncpg\pool.py", line 153, in connect
+    self._con = await self._pool._get_new_connection()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai_soc\ai_soc\.venv\Lib\site-packages\asyncpg\pool.py", line 538, in _get_new_connection
+    con = await self._connect(
+          ^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+    )
+    ^
+  File "D:\ai_soc\ai_soc\.venv\Lib\site-packages\asyncpg\connection.py", line 2442, in connect
+    async with compat.timeout(timeout):
+               ~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Program Files\Python313\Lib\asyncio\timeouts.py", line 116, in __aexit__
+    raise TimeoutError from exc_val
+TimeoutError
+
+%5|1780293858.413|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10093ms, timeout #0)
+ERROR:    Application startup failed. Exiting.
+%4|1780293860.102|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
