@@ -1,3 +1,13 @@
 D:\ai_soc\ai_soc\backend\bridge\wazuh_kafka_bridge.py:67: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
   self._token_expiry: datetime = datetime.utcnow()
 INFO:__main__:Wazuh\u2192Kafka bridge starting (poll interval=1s)
+%5|1780373853.241|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10096ms, timeout #0)
+%4|1780373853.323|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10179ms in state APIVERSION_QUERY)
+%4|1780373853.391|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780373864.364|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10107ms, timeout #0)
+%4|1780373864.483|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10227ms in state APIVERSION_QUERY, 1 identical error(s) suppressed)
+%4|1780373864.569|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780373875.490|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10113ms, timeout #0)
+%4|1780373875.657|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780373886.610|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10100ms, timeout #0)
+%4|1780373886.904|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
