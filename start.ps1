@@ -79,6 +79,22 @@ if (-not $SkipDocker) {
         Start-Sleep -Seconds 3
     }
     if ($kafkaReady) { OK "Kafka healthy" } else { ERR "Kafka not healthy after 90s — continuing anyway" }
+
+    # ── Create Kafka topics (idempotent) ─────────────────────────────────────
+    Log "Creating Kafka topics..."
+    $topics = @{
+        "wazuh.raw"="24 86400000"; "wazuh.analysed"="4 604800000"
+        "wazuh.enriched"="4 604800000"; "wazuh.playbooks"="4 604800000"
+        "wazuh.hitl-queue"="2 604800000"; "wazuh.soar-actions"="4 2592000000"
+        "wazuh.audit"="4 7776000000"; "wazuh.feedback"="2 604800000"
+    }
+    foreach ($t in $topics.Keys) {
+        $p,$r = $topics[$t].Split(" ")
+        docker exec kafka /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 `
+            --create --if-not-exists --topic $t --partitions $p --replication-factor 1 `
+            --config retention.ms=$r 1>$null 2>$null
+    }
+    OK "Kafka topics ensured"
 }
 
 # ── 6. FastAPI backend ────────────────────────────────────────────────────────

@@ -25,7 +25,7 @@ import aiosqlite
 import httpx
 from fastapi import APIRouter, Query
 
-from infrastructure.sqlite_client import sqlite_client
+from infrastructure.sqlite_client import sqlite_client, SQLITE_DB_PATH
 from services.shuffle_client import shuffle_client, ATTACK_TO_WORKFLOW
 
 log = logging.getLogger(__name__)
@@ -115,7 +115,7 @@ async def get_executions(
         log.warning("[SOAR-DASH] list_executions failed: %s — SQLite fallback", exc)
 
 
-    async with aiosqlite.connect(sqlite_client.db_path) as db:
+    async with aiosqlite.connect(SQLITE_DB_PATH) as db:
         db.row_factory = aiosqlite.Row
         async with db.execute(
             """
@@ -190,7 +190,7 @@ async def get_telemetry(
 
     if not shuffle_ok:
 
-        async with aiosqlite.connect(sqlite_client.db_path) as db:
+        async with aiosqlite.connect(SQLITE_DB_PATH) as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 """
@@ -228,7 +228,7 @@ async def get_audit_log(
     """
     results: list[dict[str, Any]] = []
 
-    async with aiosqlite.connect(sqlite_client.db_path) as db:
+    async with aiosqlite.connect(SQLITE_DB_PATH) as db:
         db.row_factory = aiosqlite.Row
 
 

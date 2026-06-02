@@ -72,7 +72,7 @@ class WazuhKafkaBridge:
     @retry(stop=stop_after_attempt(3), wait=wait_exponential(min=2, max=10))
     async def _refresh_token(self) -> None:
         url = f"{WAZUH_API_URL}/security/user/authenticate"
-        resp = await self._client.get(
+        resp = await self._client.post(
             url, auth=(WAZUH_USER, WAZUH_PASSWORD)
         )
         resp.raise_for_status()

@@ -35,7 +35,7 @@ from pydantic import BaseModel
 
 from config.settings import settings
 from infrastructure.kafka_client import kafka_producer
-from infrastructure.sqlite_client import sqlite_client
+from infrastructure.sqlite_client import sqlite_client, SQLITE_DB_PATH
 from services.shuffle_client import shuffle_client
 
 log = logging.getLogger(__name__)
@@ -71,7 +71,7 @@ async def initialise_soar_tables() -> None:
     Called from the FastAPI lifespan event in main.py alongside
     sqlite_client.initialise().
     """
-    async with aiosqlite.connect(sqlite_client.db_path) as db:
+    async with aiosqlite.connect(SQLITE_DB_PATH) as db:
         await db.executescript(SOAR_DDL)
         await db.commit()
     log.info("SOAR SQLite tables initialised")
@@ -164,7 +164,7 @@ async def hitl_gate(payload: HitlGatePayload) -> dict[str, bool]:
 
 
     request_id = str(uuid.uuid4())
-    async with aiosqlite.connect(sqlite_client.db_path) as db:
+    async with aiosqlite.connect(SQLITE_DB_PATH) as db:
         await db.execute(
             """
             INSERT INTO soar_hitl_requests
@@ -242,7 +242,7 @@ async def hitl_approve(
     )
 
 
-    async with aiosqlite.connect(sqlite_client.db_path) as db:
+    async with aiosqlite.connect(SQLITE_DB_PATH) as db:
         db.row_factory = aiosqlite.Row
         async with db.execute(
             "SELECT id FROM soar_hitl_requests WHERE execution_id = ? AND status = 'PENDING'",
@@ -278,7 +278,7 @@ async def hitl_approve(
         )
 
 
-    async with aiosqlite.connect(sqlite_client.db_path) as db:
+    async with aiosqlite.connect(SQLITE_DB_PATH) as db:
         await db.execute(
             """
             UPDATE soar_hitl_requests
@@ -341,7 +341,7 @@ async def hitl_reject(
     )
 
 
-    async with aiosqlite.connect(sqlite_client.db_path) as db:
+    async with aiosqlite.connect(SQLITE_DB_PATH) as db:
         db.row_factory = aiosqlite.Row
         async with db.execute(
             "SELECT id FROM soar_hitl_requests WHERE execution_id = ? AND status = 'PENDING'",
@@ -374,7 +374,7 @@ async def hitl_reject(
         )
 
 
-    async with aiosqlite.connect(sqlite_client.db_path) as db:
+    async with aiosqlite.connect(SQLITE_DB_PATH) as db:
         await db.execute(
             """
             UPDATE soar_hitl_requests
@@ -471,7 +471,7 @@ async def list_executions(
         log.warning("[SOAR] list_executions failed (%s) — SQLite fallback", exc)
 
 
-    async with aiosqlite.connect(sqlite_client.db_path) as db:
+    async with aiosqlite.connect(SQLITE_DB_PATH) as db:
         db.row_factory = aiosqlite.Row
         async with db.execute(
             """

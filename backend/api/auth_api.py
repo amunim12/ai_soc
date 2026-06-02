@@ -24,7 +24,7 @@ from jose import JWTError
 from pydantic import BaseModel
 
 from infrastructure.auth_client import auth_client, decode_token
-from infrastructure.sqlite_client import sqlite_client
+from infrastructure.sqlite_client import sqlite_client, SQLITE_DB_PATH
 
 log = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/auth", tags=["auth"])
@@ -126,7 +126,7 @@ async def auth_audit(
     _: dict = Depends(require_admin),
 ) -> list:
     """Admin: view the SOC2 authentication audit log."""
-    async with aiosqlite.connect(sqlite_client.db_path) as db:
+    async with aiosqlite.connect(SQLITE_DB_PATH) as db:
         db.row_factory = aiosqlite.Row
         async with db.execute(
             "SELECT * FROM auth_audit ORDER BY timestamp DESC LIMIT ?", (limit,)
