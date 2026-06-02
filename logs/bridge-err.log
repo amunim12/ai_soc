@@ -1,0 +1,3 @@
+D:\ai_soc\ai_soc\backend\bridge\wazuh_kafka_bridge.py:67: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  self._token_expiry: datetime = datetime.utcnow()
+INFO:__main__:Wazuh\u2192Kafka bridge starting (poll interval=1s)
