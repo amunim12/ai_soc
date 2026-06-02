@@ -1,0 +1,13 @@
+INFO:services.shuffle_client:ShuffleClient initialised \u2192 http://localhost:5001
+INFO:infrastructure.chroma_client:ChromaClient configured \u2192 localhost:8888 (server-side embeddings)
+INFO:     Started server process [4904]
+INFO:     Waiting for application startup.
+INFO:infrastructure.postgres_client:PostgresClient initialised \u2192 localhost:5432/soc_pipeline  pool=10–128
+INFO:api.soar_routes:SOAR SQLite tables initialised
+INFO:main:AI SOC API started
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+%5|1780373832.172|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10108ms, timeout #0)
+%4|1780373832.565|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10502ms in state APIVERSION_QUERY)
+%4|1780373832.793|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+WARNING:api.siem_api:[SIEM] Wazuh authentication failed: 
