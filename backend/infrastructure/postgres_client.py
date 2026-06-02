@@ -83,7 +83,7 @@ class PostgresClient:
 
     async def initialise(self) -> None:
         self._pool = await asyncpg.create_pool(
-            self._dsn, min_size=self._min_pool, max_size=self._max_pool,
+            self._dsn, min_size=self._min_pool, max_size=self._max_pool, ssl=False,
         )
         async with self._pool.acquire() as conn:
             for stmt in DDL.strip().split(";"):
@@ -168,7 +168,7 @@ class PostgresClient:
         """
         start = datetime.utcnow()
         escalated = False
-        conn = await asyncpg.connect(self._dsn)
+        conn = await asyncpg.connect(self._dsn, ssl=False)
         try:
             await conn.execute("LISTEN hitl_decision")
             while True:

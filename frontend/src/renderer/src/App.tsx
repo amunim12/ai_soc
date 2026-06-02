@@ -61,7 +61,7 @@ export default function App() {
     setSelectedReview(null)
   }
 
-  function onDecisionMade(action?: string) {
+  function onDecisionMade(_action?: string) {
     setSelectedReview(null)
     refreshPendingCount()
     // Navigate to dashboard so the Overview metrics (Escalated, Pending, etc.)

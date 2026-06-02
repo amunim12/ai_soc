@@ -45,7 +45,7 @@ const PHASE_ICONS: Record<string, string> = {
   recovery:    '♻',
 }
 
-function playbookToYaml(pb: Playbook, raw: string): string {
+function playbookToYaml(_pb: Playbook, raw: string): string {
   // Return prettified raw JSON as fallback YAML-like view
   try {
     const obj = JSON.parse(raw)
