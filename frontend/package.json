@@ -1,10 +1,10 @@
 {
   "name": "frontend",
   "version": "1.0.0",
-  "description": "An Electron application with React and TypeScript",
+  "description": "AI SOC — On-Premises Security Operations Center",
   "main": "./out/main/index.js",
-  "author": "example.com",
-  "homepage": "https://electron-vite.org",
+  "author": "AI SOC Contributors",
+  "homepage": "https://github.com/amunim12/ai-soc",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache .",
@@ -22,12 +22,91 @@
     "build:mac": "electron-vite build && electron-builder --mac",
     "build:linux": "electron-vite build && electron-builder --linux"
   },
+  "build": {
+    "appId": "com.aisoc.pipeline",
+    "productName": "AI SOC",
+    "copyright": "Copyright © 2025 AI SOC Contributors",
+    "directories": {
+      "output": "dist-installer"
+    },
+    "files": [
+      "out/**/*",
+      "resources/**/*",
+      "!resources/*.psd"
+    ],
+    "extraResources": [
+      {
+        "from": "../backend/docker-compose.yml",
+        "to": "backend/docker-compose.yml"
+      },
+      {
+        "from": "../backend/.env.example",
+        "to": "backend/.env.example"
+      },
+      {
+        "from": "../wazuh-docker/single-node/docker-compose.yml",
+        "to": "wazuh/docker-compose.yml"
+      },
+      {
+        "from": "../deploy/shuffle/docker-compose.yml",
+        "to": "shuffle/docker-compose.yml"
+      },
+      {
+        "from": "../monitoring",
+        "to": "monitoring",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "../scripts",
+        "to": "scripts",
+        "filter": ["**/*"]
+      }
+    ],
+    "win": {
+      "target": [{ "target": "nsis", "arch": ["x64"] }],
+      "icon": "resources/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "AI SOC",
+      "deleteAppDataOnUninstall": false
+    },
+    "mac": {
+      "target": [{ "target": "dmg", "arch": ["x64", "arm64"] }],
+      "icon": "resources/icon.icns",
+      "category": "public.app-category.utilities"
+    },
+    "dmg": {
+      "title": "AI SOC Installer",
+      "contents": [
+        { "x": 410, "y": 150, "type": "link", "path": "/Applications" },
+        { "x": 130, "y": 150, "type": "file" }
+      ]
+    },
+    "linux": {
+      "target": [
+        { "target": "AppImage", "arch": ["x64"] },
+        { "target": "deb", "arch": ["x64"] }
+      ],
+      "icon": "resources/icon.png",
+      "category": "System"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "amunim12",
+      "repo": "ai-soc"
+    }
+  },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
     "@tanstack/react-query": "^5.96.2",
     "clsx": "^2.1.1",
     "cytoscape": "^3.33.2",
+    "electron-updater": "^6.3.9",
     "lucide-react": "^1.7.0",
     "react-cytoscapejs": "^2.0.0",
     "recharts": "^3.8.1",
