@@ -19,7 +19,7 @@ langchain-core==0.3.28
 #   LOCAL_AI_ONLY=true
 #   LOCAL_LLM_BASE_URL=http://localhost:8001/v1
 #   LOCAL_LLM_MODEL=meta-llama/Llama-3.3-70B-Instruct
-openai==1.54.0              # OpenAI-compatible client for vLLM API calls
+openai==2.40.0              # OpenAI-compatible client for vLLM API calls
 pydantic==2.9.2
 pydantic-settings==2.6.1
 
