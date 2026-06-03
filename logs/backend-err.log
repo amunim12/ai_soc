@@ -1,0 +1,289 @@
+INFO:services.shuffle_client:ShuffleClient initialised \u2192 http://localhost:5001
+INFO:infrastructure.chroma_client:ChromaClient configured \u2192 localhost:8888 (server-side embeddings)
+INFO:     Started server process [21116]
+INFO:     Waiting for application startup.
+INFO:infrastructure.postgres_client:PostgresClient initialised \u2192 localhost:5432/soc_pipeline  pool=10–128
+INFO:api.soar_routes:SOAR SQLite tables initialised
+INFO:main:AI SOC API started
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+%5|1780305698.945|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out MetadataRequest in flight (after 60650ms, timeout #0)
+%4|1780305699.407|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305714.174|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10101ms, timeout #0)
+%4|1780305714.185|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10112ms in state APIVERSION_QUERY)
+%4|1780305714.216|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305725.292|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10106ms, timeout #0)
+%5|1780305726.301|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10102ms, timeout #0)
+%4|1780305729.850|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 14665ms in state APIVERSION_QUERY)
+%4|1780305729.891|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 13693ms in state APIVERSION_QUERY, 1 identical error(s) suppressed)
+%4|1780305730.229|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780305732.820|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305743.456|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10082ms, timeout #0)
+%5|1780305744.468|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10083ms, timeout #0)
+%4|1780305747.156|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780305747.170|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 12786ms in state APIVERSION_QUERY, 1 identical error(s) suppressed)
+%4|1780305748.568|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305758.633|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10113ms, timeout #0)
+%5|1780305759.642|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10117ms, timeout #0)
+%4|1780305762.079|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 13559ms in state APIVERSION_QUERY, 2 identical error(s) suppressed)
+%4|1780305763.029|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780305763.098|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305773.810|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10112ms, timeout #0)
+%5|1780305775.853|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10116ms, timeout #0)
+%4|1780305777.729|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 14031ms in state APIVERSION_QUERY, 2 identical error(s) suppressed)
+%4|1780305779.117|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780305779.215|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305789.980|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10090ms, timeout #0)
+%4|1780305790.836|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305790.993|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10093ms, timeout #0)
+%4|1780305792.447|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 11548ms in state APIVERSION_QUERY, 2 identical error(s) suppressed)
+%4|1780305792.448|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305801.097|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10102ms, timeout #0)
+%5|1780305803.116|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10095ms, timeout #0)
+%4|1780305805.821|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780305805.904|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305818.278|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10100ms, timeout #0)
+%4|1780305818.838|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10661ms in state APIVERSION_QUERY, 3 identical error(s) suppressed)
+%4|1780305818.878|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305819.293|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10106ms, timeout #0)
+%4|1780305819.359|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305829.399|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10105ms, timeout #0)
+%4|1780305829.608|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305830.428|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10107ms, timeout #0)
+%4|1780305831.324|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 11004ms in state APIVERSION_QUERY, 3 identical error(s) suppressed)
+%4|1780305831.564|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305840.532|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10117ms, timeout #0)
+%4|1780305842.854|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305843.581|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10114ms, timeout #0)
+%4|1780305845.729|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305855.715|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10105ms, timeout #0)
+%4|1780305856.135|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10525ms in state APIVERSION_QUERY, 3 identical error(s) suppressed)
+%4|1780305856.302|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305856.725|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10114ms, timeout #0)
+%4|1780305857.222|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305866.810|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10099ms, timeout #0)
+%4|1780305867.569|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305867.837|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10100ms, timeout #0)
+%4|1780305868.534|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10797ms in state APIVERSION_QUERY, 3 identical error(s) suppressed)
+%4|1780305868.539|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305878.956|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10105ms, timeout #0)
+%4|1780305879.085|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305879.952|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10101ms, timeout #0)
+%4|1780305880.575|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305890.075|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10121ms, timeout #0)
+%4|1780305890.166|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10213ms in state APIVERSION_QUERY, 3 identical error(s) suppressed)
+%4|1780305890.167|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305892.114|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10126ms, timeout #0)
+%4|1780305892.165|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305901.182|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10078ms, timeout #0)
+%4|1780305901.707|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305903.207|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10094ms, timeout #0)
+%4|1780305903.877|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10765ms in state APIVERSION_QUERY, 3 identical error(s) suppressed)
+%4|1780305903.886|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305913.294|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10100ms, timeout #0)
+%4|1780305913.625|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305914.324|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10102ms, timeout #0)
+%4|1780305915.023|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305924.417|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10106ms, timeout #0)
+%4|1780305926.265|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 11954ms in state APIVERSION_QUERY, 3 identical error(s) suppressed)
+%4|1780305927.344|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305926.440|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10105ms, timeout #0)
+%4|1780305927.454|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305937.558|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10102ms, timeout #0)
+%4|1780305937.558|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305938.587|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10105ms, timeout #0)
+%4|1780305938.596|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10114ms in state APIVERSION_QUERY, 3 identical error(s) suppressed)
+%4|1780305938.596|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305948.417|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10093ms, timeout #0)
+%5|1780305949.724|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10124ms, timeout #0)
+%4|1780305950.057|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780305955.881|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305969.920|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10107ms, timeout #0)
+%4|1780305970.056|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10244ms in state APIVERSION_QUERY, 3 identical error(s) suppressed)
+%4|1780305970.061|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305970.917|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10103ms, timeout #0)
+%4|1780305971.374|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10560ms in state APIVERSION_QUERY, 2 identical error(s) suppressed)
+%4|1780305971.754|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305981.017|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10099ms, timeout #0)
+%5|1780305983.051|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10102ms, timeout #0)
+%4|1780305985.647|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780305987.915|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780305999.210|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10098ms, timeout #0)
+%5|1780306000.219|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10122ms, timeout #0)
+%4|1780306002.378|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 13267ms in state APIVERSION_QUERY, 2 identical error(s) suppressed)
+%4|1780306002.384|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 12287ms in state APIVERSION_QUERY, 2 identical error(s) suppressed)
+%4|1780306010.118|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780306012.693|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306023.469|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10109ms, timeout #0)
+%5|1780306024.496|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10112ms, timeout #0)
+%4|1780306028.638|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780306037.921|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 23536ms in state APIVERSION_QUERY, 1 identical error(s) suppressed)
+%4|1780306038.599|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306048.790|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10125ms, timeout #0)
+%4|1780306049.354|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10689ms in state APIVERSION_QUERY, 2 identical error(s) suppressed)
+%4|1780306049.423|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306054.849|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10111ms, timeout #0)
+%4|1780306054.979|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306060.920|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10122ms, timeout #0)
+%4|1780306061.981|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306067.992|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10109ms, timeout #0)
+%4|1780306070.291|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 12408ms in state APIVERSION_QUERY, 2 identical error(s) suppressed)
+%4|1780306071.842|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306073.045|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10098ms, timeout #0)
+%4|1780306077.494|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306087.196|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10108ms, timeout #0)
+%5|1780306089.233|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10116ms, timeout #0)
+%4|1780306090.577|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780306094.137|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 15021ms in state APIVERSION_QUERY, 3 identical error(s) suppressed)
+%4|1780306094.196|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306104.383|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10109ms, timeout #0)
+%4|1780306104.979|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10705ms in state APIVERSION_QUERY, 2 identical error(s) suppressed)
+%4|1780306105.148|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306105.396|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10110ms, timeout #0)
+%4|1780306109.960|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306115.500|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10103ms, timeout #0)
+%4|1780306118.760|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306120.594|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10123ms, timeout #0)
+%4|1780306123.144|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306133.733|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10118ms, timeout #0)
+%5|1780306134.730|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10115ms, timeout #0)
+%4|1780306135.498|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 11884ms in state APIVERSION_QUERY, 3 identical error(s) suppressed)
+%4|1780306135.982|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 11367ms in state APIVERSION_QUERY, 2 identical error(s) suppressed)
+%4|1780306151.530|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780306149.710|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306162.046|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10112ms, timeout #0)
+%4|1780306162.219|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306166.066|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10100ms, timeout #0)
+%4|1780306169.607|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 13641ms in state APIVERSION_QUERY, 1 identical error(s) suppressed)
+%4|1780306170.248|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306176.170|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10088ms, timeout #0)
+%4|1780306177.158|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 11076ms in state APIVERSION_QUERY, 2 identical error(s) suppressed)
+%4|1780306177.164|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306187.289|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10116ms, timeout #0)
+%5|1780306188.301|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10113ms, timeout #0)
+%4|1780306190.837|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780306191.206|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306202.465|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10124ms, timeout #0)
+%5|1780306203.463|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10123ms, timeout #0)
+%4|1780306207.707|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 15366ms in state APIVERSION_QUERY, 2 identical error(s) suppressed)
+%4|1780306210.617|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 17277ms in state APIVERSION_QUERY, 2 identical error(s) suppressed)
+%4|1780306213.002|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780306213.131|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306225.748|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10117ms, timeout #0)
+%5|1780306226.749|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10103ms, timeout #0)
+%4|1780306232.605|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780306244.649|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 28004ms in state APIVERSION_QUERY, 1 identical error(s) suppressed)
+%4|1780306253.167|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306259.060|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10096ms, timeout #0)
+%4|1780306262.132|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 13168ms in state APIVERSION_QUERY, 2 identical error(s) suppressed)
+%5|1780306264.156|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10129ms, timeout #0)
+%4|1780306265.784|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780306268.592|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306280.283|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10088ms, timeout #0)
+%4|1780306280.543|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10349ms in state APIVERSION_QUERY, 2 identical error(s) suppressed)
+%4|1780306280.543|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306281.293|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10085ms, timeout #0)
+%4|1780306281.730|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306291.390|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10096ms, timeout #0)
+%4|1780306292.712|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306293.405|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10088ms, timeout #0)
+%4|1780306294.228|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10911ms in state APIVERSION_QUERY, 2 identical error(s) suppressed)
+%4|1780306296.431|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306303.521|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10112ms, timeout #0)
+%5|1780306306.564|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10103ms, timeout #0)
+%4|1780306307.056|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780306308.273|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306321.723|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10116ms, timeout #0)
+%5|1780306322.735|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10102ms, timeout #0)
+%4|1780306327.910|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 16303ms in state APIVERSION_QUERY, 3 identical error(s) suppressed)
+%4|1780306328.010|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 15377ms in state APIVERSION_QUERY, 2 identical error(s) suppressed)
+%4|1780306328.582|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780306329.016|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306339.939|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10126ms, timeout #0)
+%4|1780306341.813|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306341.961|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10119ms, timeout #0)
+%4|1780306343.635|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306354.055|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10087ms, timeout #0)
+%5|1780306355.066|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10087ms, timeout #0)
+%4|1780306356.328|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780306356.328|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306367.204|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10110ms, timeout #0)
+%5|1780306368.233|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10117ms, timeout #0)
+%4|1780306368.876|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 11782ms in state APIVERSION_QUERY, 3 identical error(s) suppressed)
+%4|1780306368.906|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10792ms in state APIVERSION_QUERY, 3 identical error(s) suppressed)
+%4|1780306370.401|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780306374.349|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306385.416|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10117ms, timeout #0)
+%4|1780306386.249|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306386.445|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10117ms, timeout #0)
+%4|1780306389.710|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306396.540|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10109ms, timeout #0)
+%4|1780306397.158|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306400.592|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10105ms, timeout #0)
+%4|1780306401.443|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10956ms in state APIVERSION_QUERY, 2 identical error(s) suppressed)
+%4|1780306404.083|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306407.670|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10112ms, timeout #0)
+%4|1780306408.430|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10873ms in state APIVERSION_QUERY, 3 identical error(s) suppressed)
+%4|1780306408.566|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306414.739|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10098ms, timeout #0)
+%5|1780306418.796|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10104ms, timeout #0)
+%4|1780306418.992|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780306421.920|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306432.945|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10108ms, timeout #0)
+%4|1780306433.546|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10713ms in state APIVERSION_QUERY, 2 identical error(s) suppressed)
+%4|1780306433.546|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306433.957|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10109ms, timeout #0)
+%4|1780306433.957|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306444.080|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10121ms, timeout #0)
+%5|1780306445.105|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10116ms, timeout #0)
+%4|1780306445.838|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780306448.218|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 13230ms in state APIVERSION_QUERY, 3 identical error(s) suppressed)
+%4|1780306448.220|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306459.227|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10089ms, timeout #0)
+%5|1780306460.237|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10083ms, timeout #0)
+%4|1780306461.527|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780306462.652|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306474.414|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10110ms, timeout #0)
+%4|1780306474.864|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306475.402|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10102ms, timeout #0)
+%4|1780306475.403|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10103ms in state APIVERSION_QUERY, 3 identical error(s) suppressed)
+%4|1780306475.404|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306485.515|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10111ms, timeout #0)
+%5|1780306486.528|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10109ms, timeout #0)
+%4|1780306491.071|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 15667ms in state APIVERSION_QUERY, 3 identical error(s) suppressed)
+%4|1780306491.389|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780306491.389|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306502.697|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10115ms, timeout #0)
+%4|1780306504.484|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306503.705|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10111ms, timeout #0)
+%4|1780306506.595|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306515.818|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10122ms, timeout #0)
+%5|1780306516.819|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10108ms, timeout #0)
+%4|1780306517.817|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 12121ms in state APIVERSION_QUERY, 3 identical error(s) suppressed)
+%4|1780306523.472|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 16762ms in state APIVERSION_QUERY, 2 identical error(s) suppressed)
+%4|1780306525.170|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780306534.367|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306548.146|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10111ms, timeout #0)
+%5|1780306548.427|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10109ms, timeout #0)
+%4|1780306554.186|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 16152ms in state APIVERSION_QUERY, 1 identical error(s) suppressed)
+%4|1780306554.622|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 16306ms in state APIVERSION_QUERY, 1 identical error(s) suppressed)
+%4|1780306556.068|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%4|1780306556.066|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306566.365|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10111ms, timeout #0)
+%4|1780306567.279|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306567.343|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10090ms, timeout #0)
+%4|1780306567.985|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306578.444|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10089ms, timeout #0)
+%4|1780306578.516|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306579.472|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10103ms, timeout #0)
+%4|1780306579.594|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306589.570|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10098ms, timeout #0)
+%4|1780306589.570|FAIL|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10098ms in state APIVERSION_QUERY, 3 identical error(s) suppressed)
+%4|1780306589.570|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306590.563|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10094ms, timeout #0)
+%4|1780306590.563|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: ApiVersionRequest failed: Local: Timed out: probably due to broker version < 0.10 (see api.version.request configuration) (after 10094ms in state APIVERSION_QUERY, 3 identical error(s) suppressed)
+%4|1780306590.564|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306600.688|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out ApiVersionRequest in flight (after 10108ms, timeout #0)
+%4|1780306600.693|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/1]: localhost:9092/1: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
+%5|1780306601.679|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out ApiVersionRequest in flight (after 10102ms, timeout #0)
+%4|1780306601.787|REQTMOUT|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Timed out 1 in-flight, 0 retry-queued, 0 out-queue, 0 partially-sent requests
