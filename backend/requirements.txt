@@ -21,7 +21,7 @@ langchain-core==0.3.28
 #   LOCAL_LLM_MODEL=meta-llama/Llama-3.3-70B-Instruct
 openai==2.40.0              # OpenAI-compatible client for vLLM API calls
 pydantic==2.9.2
-pydantic-settings==2.6.1
+pydantic-settings==2.14.1
 
 # ─── Kafka ─────────────────────────────────────────────────────────────────
 confluent-kafka==2.14.2
