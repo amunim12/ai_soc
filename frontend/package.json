@@ -123,7 +123,7 @@
     "@types/react": "^19.2.7",
     "@types/react-cytoscapejs": "^1.2.6",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^5.1.1",
+    "@vitejs/plugin-react": "^6.0.1",
     "autoprefixer": "^10.4.27",
     "cross-env": "^10.1.0",
     "electron": "^28.3.3",
