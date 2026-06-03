@@ -24,7 +24,7 @@ pydantic==2.9.2
 pydantic-settings==2.6.1
 
 # ─── Kafka ─────────────────────────────────────────────────────────────────
-confluent-kafka==2.6.1
+confluent-kafka==2.14.2
 
 # ─── Vector Store & Embeddings ─────────────────────────────────────────────
 chromadb==0.5.23
