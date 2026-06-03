@@ -54,6 +54,16 @@ class Settings(BaseSettings):
     WAZUH_API_URL:  str = "https://wazuh-manager:55000"
     WAZUH_USER:     str = "wazuh"
     WAZUH_PASSWORD: str = ""
+    WAZUH_CA_CERT:  Optional[str] = Field(
+        None,
+        description="Path to Wazuh Manager CA certificate (PEM). "
+                    "Use this for self-signed certs instead of disabling TLS verification.",
+    )
+    WAZUH_TLS_VERIFY: bool = Field(
+        True,
+        description="Set False only in isolated dev environments with no CA cert available. "
+                    "Disabling TLS verification allows MITM attacks.",
+    )
 
 
     HUGGING_FACE_HUB_TOKEN: Optional[str] = None

@@ -25,7 +25,9 @@ from schemas.playbook import Playbook
 from schemas.audit import AuditEntry, StepLog
 from infrastructure.sqlite_client import sqlite_client
 from infrastructure.kafka_client import kafka_producer
+from api.metrics_middleware import prometheus_middleware, metrics_endpoint
 from datetime import datetime
+from starlette.middleware.base import BaseHTTPMiddleware
 
 
 load_dotenv()
@@ -49,6 +51,9 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+
+app.add_middleware(BaseHTTPMiddleware, dispatch=prometheus_middleware)
+app.add_route("/metrics", metrics_endpoint, methods=["GET"])
 
 
 class DecisionRequest(BaseModel):

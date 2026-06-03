@@ -19,75 +19,16 @@ endpoints degrade gracefully to SQLite-derived data.
 from __future__ import annotations
 
 import logging
-import time
 from typing import Any, Optional
 
-import httpx
 from fastapi import APIRouter, Query
 
-from config.settings import settings
 from infrastructure.sqlite_client import sqlite_client
+from infrastructure.wazuh_client import wazuh_get
 
 log = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/siem", tags=["siem"])
-
-
-_wazuh_token: Optional[str] = None
-_wazuh_token_expires: float = 0.0
-
-
-async def _get_wazuh_token() -> Optional[str]:
-    """
-    Return a valid Wazuh Manager JWT token, re-authenticating when needed.
-    Returns None if Wazuh is unreachable or credentials are missing.
-    """
-    global _wazuh_token, _wazuh_token_expires
-
-    if _wazuh_token and time.time() < _wazuh_token_expires:
-        return _wazuh_token
-
-    if not settings.WAZUH_PASSWORD:
-        return None
-
-    try:
-        async with httpx.AsyncClient(verify=False, timeout=5.0) as client:
-            resp = await client.post(
-                f"{settings.WAZUH_API_URL}/security/user/authenticate",
-                auth=(settings.WAZUH_USER, settings.WAZUH_PASSWORD),
-            )
-            resp.raise_for_status()
-            data = resp.json()
-            _wazuh_token = data["data"]["token"]
-            _wazuh_token_expires = time.time() + 840
-            log.info("[SIEM] Wazuh token refreshed")
-            return _wazuh_token
-    except Exception as exc:
-        log.warning("[SIEM] Wazuh authentication failed: %s", exc)
-        _wazuh_token = None
-        return None
-
-
-async def _wazuh_get(path: str, params: dict | None = None) -> Optional[dict]:
-    """
-    Perform an authenticated GET against the Wazuh Manager REST API.
-    Returns the parsed JSON body or None on any error.
-    """
-    token = await _get_wazuh_token()
-    if not token:
-        return None
-    try:
-        async with httpx.AsyncClient(verify=False, timeout=8.0) as client:
-            resp = await client.get(
-                f"{settings.WAZUH_API_URL}{path}",
-                headers={"Authorization": f"Bearer {token}"},
-                params=params,
-            )
-            resp.raise_for_status()
-            return resp.json()
-    except Exception as exc:
-        log.warning("[SIEM] Wazuh GET %s failed: %s", path, exc)
-        return None
 
 
 def _wazuh_status(raw_status: str) -> str:
@@ -113,7 +54,7 @@ async def get_summary() -> dict[str, Any]:
     agents_active = 0
     wazuh_online  = False
 
-    wazuh_data = await _wazuh_get("/overview/agents")
+    wazuh_data = await wazuh_get("/overview/agents")
     if wazuh_data:
         wazuh_online  = True
         summary = wazuh_data.get("data", {}).get("agent_os", [])
@@ -179,7 +120,7 @@ async def get_agents_siem() -> list[dict[str, Any]]:
     Monitored agent list.  Queries the Wazuh Manager REST API first;
     falls back to SQLite-derived agent data if Wazuh is unreachable.
     """
-    wazuh_data = await _wazuh_get("/agents", params={"limit": 500, "select": "id,name,ip,os,status,lastKeepAlive,version"})
+    wazuh_data = await wazuh_get("/agents", {"limit": 500, "select": "id,name,ip,os,status,lastKeepAlive,version"})
 
     if wazuh_data:
         raw_agents = wazuh_data.get("data", {}).get("affected_items", [])

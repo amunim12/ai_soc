@@ -15,12 +15,12 @@ function timeAgo(iso: string): string {
 function StatusBadge({ status }: { status: string }) {
   const s = status?.toUpperCase()
   const map: Record<string, { cls: string; icon: string }> = {
-    FINISHED:  { cls: 'badge-low',      icon: '✓' },
-    COMPLETED: { cls: 'badge-low',      icon: '✓' },
-    EXECUTING: { cls: 'badge-medium',   icon: '▶' },
-    PENDING:   { cls: 'badge-info',     icon: '⏳' },
-    ABORTED:   { cls: 'badge-high',     icon: '⏹' },
-    FAILED:    { cls: 'badge-critical', icon: '✕' },
+    FINISHED: { cls: 'badge-low', icon: '✓' },
+    COMPLETED: { cls: 'badge-low', icon: '✓' },
+    EXECUTING: { cls: 'badge-medium', icon: '▶' },
+    PENDING: { cls: 'badge-info', icon: '⏳' },
+    ABORTED: { cls: 'badge-high', icon: '⏹' },
+    FAILED: { cls: 'badge-critical', icon: '✕' }
   }
   const style = map[s] ?? { cls: 'badge-info', icon: '?' }
   return (
@@ -55,10 +55,20 @@ export default function ExecutionHistory() {
   }, [load])
 
   return (
-    <div className="page-content animate-in" style={{ display: 'flex', flexDirection: 'column', height: '100%', padding: 0 }}>
+    <div
+      className="page-content animate-in"
+      style={{ display: 'flex', flexDirection: 'column', height: '100%', padding: 0 }}
+    >
       {/* Header */}
       <div style={{ padding: '20px 20px 0' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            marginBottom: 16
+          }}
+        >
           <div>
             <div style={{ fontSize: 18, fontWeight: 700, color: '#e2e8f0', marginBottom: 4 }}>
               Execution History
@@ -68,7 +78,9 @@ export default function ExecutionHistory() {
             </div>
           </div>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            {loading && <div className="spinner" style={{ width: 14, height: 14, borderWidth: 1.5 }} />}
+            {loading && (
+              <div className="spinner" style={{ width: 14, height: 14, borderWidth: 1.5 }} />
+            )}
             <span
               style={{
                 fontSize: 11,
@@ -77,7 +89,7 @@ export default function ExecutionHistory() {
                 color: '#38bdf8',
                 borderRadius: 99,
                 border: '1px solid rgba(56,189,248,0.2)',
-                fontWeight: 700,
+                fontWeight: 700
               }}
             >
               {executions.length} records
@@ -94,7 +106,7 @@ export default function ExecutionHistory() {
               borderRadius: 6,
               color: '#f87171',
               fontSize: 12,
-              marginBottom: 12,
+              marginBottom: 12
             }}
           >
             ⚠ {error}
@@ -130,7 +142,7 @@ export default function ExecutionHistory() {
                       background:
                         selected?.execution_id === ex.execution_id
                           ? 'rgba(139,92,246,0.08)'
-                          : undefined,
+                          : undefined
                     }}
                   >
                     <td>
@@ -138,13 +150,15 @@ export default function ExecutionHistory() {
                         style={{
                           fontFamily: 'JetBrains Mono, monospace',
                           fontSize: 11,
-                          color: '#94a3b8',
+                          color: '#94a3b8'
                         }}
                       >
                         {ex.execution_id?.slice(0, 20)}…
                       </span>
                     </td>
-                    <td style={{ fontWeight: 600, color: '#c4b5fd', fontSize: 12 }}>{ex.workflow ?? '—'}</td>
+                    <td style={{ fontWeight: 600, color: '#c4b5fd', fontSize: 12 }}>
+                      {ex.workflow ?? '—'}
+                    </td>
                     <td>
                       <StatusBadge status={ex.status} />
                     </td>
@@ -162,10 +176,20 @@ export default function ExecutionHistory() {
         {selected && (
           <div
             className="glass animate-slide"
-            style={{ width: 320, flexShrink: 0, overflow: 'auto', padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}
+            style={{
+              width: 320,
+              flexShrink: 0,
+              overflow: 'auto',
+              padding: 16,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 12
+            }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div className="section-title" style={{ marginBottom: 0 }}>Execution Detail</div>
+              <div className="section-title" style={{ marginBottom: 0 }}>
+                Execution Detail
+              </div>
               <button
                 className="btn btn-ghost"
                 style={{ padding: '3px 8px', fontSize: 11 }}
@@ -178,12 +202,20 @@ export default function ExecutionHistory() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {[
                 ['Execution ID', selected.execution_id],
-                ['Workflow',     selected.workflow ?? '—'],
-                ['Status',       selected.status],
-                ['Received',     selected.received_at ?? '—'],
+                ['Workflow', selected.workflow ?? '—'],
+                ['Status', selected.status],
+                ['Received', selected.received_at ?? '—']
               ].map(([k, v]) => (
                 <div key={k}>
-                  <div style={{ fontSize: 10, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 2 }}>
+                  <div
+                    style={{
+                      fontSize: 10,
+                      color: '#64748b',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.06em',
+                      marginBottom: 2
+                    }}
+                  >
                     {k}
                   </div>
                   <div
@@ -191,7 +223,7 @@ export default function ExecutionHistory() {
                       fontSize: 12,
                       color: '#e2e8f0',
                       fontFamily: k === 'Execution ID' ? 'monospace' : undefined,
-                      wordBreak: 'break-all',
+                      wordBreak: 'break-all'
                     }}
                   >
                     {v}

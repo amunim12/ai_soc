@@ -2,12 +2,15 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+RUN groupadd -r appuser && useradd -r -g appuser -u 1000 appuser
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
+RUN mkdir -p /app/data && chown -R appuser:appuser /app
 
-RUN mkdir -p /app/data
+USER appuser
 
 EXPOSE 8080
 

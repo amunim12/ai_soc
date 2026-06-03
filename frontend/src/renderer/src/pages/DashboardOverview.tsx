@@ -51,7 +51,7 @@ export default function DashboardOverview() {
             borderRadius: 6,
             color: '#f87171',
             fontSize: 12,
-            marginBottom: 16,
+            marginBottom: 16
           }}
         >
           ⚠ Cannot reach backend — {error}
@@ -70,7 +70,7 @@ export default function DashboardOverview() {
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))',
             gap: 12,
-            marginBottom: 24,
+            marginBottom: 24
           }}
         >
           <MetricsCard
@@ -143,11 +143,11 @@ export default function DashboardOverview() {
             <AreaChart data={activity} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
               <defs>
                 <linearGradient id="grad-executed" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%"  stopColor="#34d399" stopOpacity={0.3} />
+                  <stop offset="5%" stopColor="#34d399" stopOpacity={0.3} />
                   <stop offset="95%" stopColor="#34d399" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="grad-dropped" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%"  stopColor="#f87171" stopOpacity={0.2} />
+                  <stop offset="5%" stopColor="#f87171" stopOpacity={0.2} />
                   <stop offset="95%" stopColor="#f87171" stopOpacity={0} />
                 </linearGradient>
               </defs>
@@ -164,7 +164,7 @@ export default function DashboardOverview() {
                   border: '1px solid rgba(56,189,248,0.2)',
                   borderRadius: 6,
                   fontSize: 11,
-                  color: '#e2e8f0',
+                  color: '#e2e8f0'
                 }}
               />
               <Area
@@ -187,8 +187,6 @@ export default function DashboardOverview() {
           </ResponsiveContainer>
         )}
       </div>
-
-
     </div>
   )
 }

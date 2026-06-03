@@ -10,11 +10,11 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
-      '@renderer': resolve('src/renderer/src'),
-    },
+      '@renderer': resolve('src/renderer/src')
+    }
   },
   server: {
     port: 5173,
-    strictPort: true,
-  },
+    strictPort: true
+  }
 })

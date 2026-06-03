@@ -60,7 +60,14 @@ export default function HitlQueue({ onSelectReview }: HitlQueueProps) {
   return (
     <div className="page-content animate-in">
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+          marginBottom: 20
+        }}
+      >
         <div>
           <div style={{ fontSize: 18, fontWeight: 700, color: '#e2e8f0', marginBottom: 4 }}>
             HITL Review Queue
@@ -70,7 +77,9 @@ export default function HitlQueue({ onSelectReview }: HitlQueueProps) {
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          {loading && <div className="spinner" style={{ width: 14, height: 14, borderWidth: 1.5 }} />}
+          {loading && (
+            <div className="spinner" style={{ width: 14, height: 14, borderWidth: 1.5 }} />
+          )}
           <span
             style={{
               fontSize: 11,
@@ -79,7 +88,7 @@ export default function HitlQueue({ onSelectReview }: HitlQueueProps) {
               background: reviews.length > 0 ? 'rgba(248,113,113,0.15)' : 'rgba(52,211,153,0.1)',
               color: reviews.length > 0 ? '#f87171' : '#34d399',
               borderRadius: 99,
-              border: `1px solid ${reviews.length > 0 ? 'rgba(248,113,113,0.3)' : 'rgba(52,211,153,0.25)'}`,
+              border: `1px solid ${reviews.length > 0 ? 'rgba(248,113,113,0.3)' : 'rgba(52,211,153,0.25)'}`
             }}
           >
             {reviews.length} pending
@@ -96,7 +105,7 @@ export default function HitlQueue({ onSelectReview }: HitlQueueProps) {
             borderRadius: 6,
             color: '#f87171',
             fontSize: 12,
-            marginBottom: 16,
+            marginBottom: 16
           }}
         >
           ⚠ {error}
@@ -123,7 +132,14 @@ export default function HitlQueue({ onSelectReview }: HitlQueueProps) {
               style={{ animationDelay: `${i * 40}ms` }}
               onClick={() => onSelectReview(review)}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  gap: 12
+                }}
+              >
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                     <span className={`badge badge-${severityClass(severity)}`}>{severity}</span>
@@ -131,7 +147,7 @@ export default function HitlQueue({ onSelectReview }: HitlQueueProps) {
                       style={{
                         fontSize: 10,
                         fontFamily: 'JetBrains Mono, monospace',
-                        color: '#64748b',
+                        color: '#64748b'
                       }}
                     >
                       {review.review_id.slice(0, 8)}
@@ -145,13 +161,16 @@ export default function HitlQueue({ onSelectReview }: HitlQueueProps) {
                       marginBottom: 4,
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
+                      whiteSpace: 'nowrap'
                     }}
                   >
                     {rule}
                   </div>
                   <div style={{ fontSize: 11, color: '#64748b' }}>
-                    Alert ID: <span style={{ color: '#94a3b8', fontFamily: 'monospace' }}>{review.alert_id.slice(0, 16)}…</span>
+                    Alert ID:{' '}
+                    <span style={{ color: '#94a3b8', fontFamily: 'monospace' }}>
+                      {review.alert_id.slice(0, 16)}…
+                    </span>
                   </div>
                   {review.reason && (
                     <div style={{ fontSize: 11, color: '#64748b', marginTop: 3 }}>
@@ -160,7 +179,15 @@ export default function HitlQueue({ onSelectReview }: HitlQueueProps) {
                   )}
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, flexShrink: 0 }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'flex-end',
+                    gap: 6,
+                    flexShrink: 0
+                  }}
+                >
                   <div
                     style={{
                       fontSize: 11,
@@ -169,7 +196,7 @@ export default function HitlQueue({ onSelectReview }: HitlQueueProps) {
                       background: 'rgba(139,92,246,0.12)',
                       color: '#c4b5fd',
                       borderRadius: 4,
-                      border: '1px solid rgba(139,92,246,0.2)',
+                      border: '1px solid rgba(139,92,246,0.2)'
                     }}
                   >
                     {Math.round(review.confidence * 100)}% confidence

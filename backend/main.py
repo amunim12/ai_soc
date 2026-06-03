@@ -31,6 +31,7 @@ from api.auth_api import router as auth_router
 from api.rag_api  import router as rag_router
 from api.siem_api import router as siem_router
 from api.soar_api import router as soar_dash_router
+from api.log_source_api import router as log_source_router
 
 load_dotenv()
 logging.basicConfig(
@@ -59,7 +60,9 @@ if _is_insecure:
 async def lifespan(_app: FastAPI):
     """Startup / shutdown lifecycle."""
     from infrastructure.auth_client import auth_client
+    from infrastructure.log_source_store import log_source_store
     await sqlite_client.initialise()
+    await log_source_store.initialise()
     await initialise_soar_tables()
     await auth_client.initialise()
     log.info("AI SOC API started")
@@ -118,6 +121,7 @@ app.include_router(auth_router)
 app.include_router(rag_router)
 app.include_router(siem_router)
 app.include_router(soar_dash_router)
+app.include_router(log_source_router)
 
 
 @app.get("/health", tags=["health"])

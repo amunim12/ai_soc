@@ -7,14 +7,41 @@ import ExecutionHistory from './pages/ExecutionHistory'
 import VectorDB from './pages/VectorDB'
 import SiemView from './pages/SiemView'
 import ShuffleView from './pages/ShuffleView'
+import LogSources from './pages/LogSources'
 import Login from './pages/Login'
+import { SetupWizard } from './components/SetupWizard'
+import { ServiceStatusBar } from './components/ServiceStatusBar'
 import { api, PendingReview } from './lib/api'
 import { loadAuth, saveAuth, clearAuth } from './lib/auth'
 import type { AuthUser } from './lib/auth'
 
-type Page = 'dashboard' | 'hitl' | 'history' | 'vectordb' | 'siem' | 'shuffle'
+type Page = 'dashboard' | 'hitl' | 'history' | 'vectordb' | 'siem' | 'shuffle' | 'logsources'
 
 export default function App() {
+  const [setupComplete, setSetupComplete] = useState<boolean | null>(null)
+
+  // Check setup on mount (only in Electron context)
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.backend) {
+      void window.backend.isSetupComplete().then(setSetupComplete)
+    } else {
+      // Browser dev mode: defer via microtask to avoid synchronous setState-in-effect
+      void Promise.resolve(true).then(setSetupComplete)
+    }
+  }, [])
+
+  // Show nothing while checking setup
+  if (setupComplete === null) return null
+
+  // Show setup wizard on first run
+  if (!setupComplete) {
+    return <SetupWizard onComplete={() => setSetupComplete(true)} />
+  }
+
+  return <MainApp />
+}
+
+function MainApp() {
   const [user, setUser] = useState<AuthUser | null>(() => loadAuth())
   const [page, setPage] = useState<Page>('dashboard')
   const [selectedReview, setSelectedReview] = useState<PendingReview | null>(null)
@@ -31,8 +58,11 @@ export default function App() {
   }, [user])
 
   useEffect(() => {
-    refreshPendingCount()
-    const t = setInterval(refreshPendingCount, 500)
+    // refreshPendingCount is async — setState inside it is deferred past the await,
+    // so it does not trigger a synchronous cascading render from the effect.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void refreshPendingCount()
+    const t = setInterval(() => void refreshPendingCount(), 500)
     return () => clearInterval(t)
   }, [refreshPendingCount])
 
@@ -75,19 +105,23 @@ export default function App() {
   }
 
   // ── Pages that replace the chrome entirely (no topbar) ────
-  if (page === 'siem')    return <SiemView    onBack={() => setPage('dashboard')} />
+  if (page === 'siem') return <SiemView onBack={() => setPage('dashboard')} />
   if (page === 'shuffle') return <ShuffleView onBack={() => setPage('dashboard')} />
+  if (page === 'logsources') return <LogSources onBack={() => setPage('dashboard')} />
 
-  const topbarTitles: Record<Exclude<Page, 'siem' | 'shuffle'>, { title: string; sub: string }> = {
-    dashboard: { title: 'Overview',         sub: 'Pipeline health & 24-hour telemetry' },
-    hitl:      { title: 'HITL Review Queue', sub: 'Human-in-the-loop threat decisions' },
-    history:   { title: 'Execution History', sub: 'SOAR workflow audit log' },
-    vectordb:  { title: 'Vector Database',   sub: 'ChromaDB RAG knowledge base' },
+  const topbarTitles: Record<
+    Exclude<Page, 'siem' | 'shuffle' | 'logsources'>,
+    { title: string; sub: string }
+  > = {
+    dashboard: { title: 'Overview', sub: 'Pipeline health & 24-hour telemetry' },
+    hitl: { title: 'HITL Review Queue', sub: 'Human-in-the-loop threat decisions' },
+    history: { title: 'Execution History', sub: 'SOAR workflow audit log' },
+    vectordb: { title: 'Vector Database', sub: 'ChromaDB RAG knowledge base' }
   }
 
   const { title, sub } = selectedReview
     ? { title: 'Threat Investigation', sub: 'Deep-dive incident review' }
-    : topbarTitles[page as Exclude<Page, 'siem' | 'shuffle'>]
+    : topbarTitles[page as Exclude<Page, 'siem' | 'shuffle' | 'logsources'>]
 
   return (
     <div className="page-layout">
@@ -109,12 +143,11 @@ export default function App() {
 
           <Clock />
 
-          <div style={{ width: 1, height: 24, background: 'rgba(255,255,255,0.07)', margin: '0 4px' }} />
+          <div
+            style={{ width: 1, height: 24, background: 'rgba(255,255,255,0.07)', margin: '0 4px' }}
+          />
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: '#64748b' }}>
-            <span className="status-dot online" />
-            <span>Pipeline active</span>
-          </div>
+          <ServiceStatusBar />
         </div>
 
         {/* Page content */}
@@ -146,7 +179,14 @@ function Clock() {
     return () => clearInterval(t)
   }, [])
   return (
-    <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 12, color: '#475569', letterSpacing: '0.05em' }}>
+    <div
+      style={{
+        fontFamily: 'JetBrains Mono, monospace',
+        fontSize: 12,
+        color: '#475569',
+        letterSpacing: '0.05em'
+      }}
+    >
       {time}
     </div>
   )

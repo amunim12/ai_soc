@@ -19,19 +19,19 @@ langchain-core==0.3.28
 #   LOCAL_AI_ONLY=true
 #   LOCAL_LLM_BASE_URL=http://localhost:8001/v1
 #   LOCAL_LLM_MODEL=meta-llama/Llama-3.3-70B-Instruct
-openai>=1.54.0              # OpenAI-compatible client for vLLM API calls
-pydantic>=2.9.2
-pydantic-settings>=2.6.1
+openai==1.54.0              # OpenAI-compatible client for vLLM API calls
+pydantic==2.9.2
+pydantic-settings==2.6.1
 
 # ─── Kafka ─────────────────────────────────────────────────────────────────
-confluent-kafka>=2.6.1
+confluent-kafka==2.6.1
 
 # ─── Vector Store & Embeddings ─────────────────────────────────────────────
-chromadb>=0.5.23
-sentence-transformers>=3.3.1
+chromadb==0.5.23
+sentence-transformers==3.3.1
 
 # ─── Async & HTTP ──────────────────────────────────────────────────────────
-aiohttp>=3.11.10
+aiohttp==3.11.10
 httpx==0.28.1
 asyncio-throttle==1.0.2
 
@@ -41,7 +41,7 @@ fakeredis==2.26.2          # used in tests
 
 # ─── API ───────────────────────────────────────────────────────────────────
 fastapi==0.115.6
-python-multipart>=0.0.9
+python-multipart==0.0.9
 uvicorn[standard]==0.32.1
 
 # ─── Database ──────────────────────────────────────────────────────────────
@@ -62,8 +62,8 @@ geoip2==4.8.0              # MaxMind GeoIP2
 
 # ─── Utilities ─────────────────────────────────────────────────────────────
 python-dotenv==1.0.1
-pyyaml>=6.0.2
-orjson>=3.10.12
+pyyaml==6.0.2
+orjson==3.10.12
 tenacity==9.0.0            # retry logic
 structlog==24.4.0          # structured logging
 rich==13.9.4               # pretty terminal output
@@ -75,6 +75,9 @@ python-jose[cryptography]==3.3.0
 # ─── RAG document ingestion ────────────────────────────────────────────────
 pymupdf==1.25.5            # PDF text extraction (PyMuPDF / fitz)
 python-docx==1.1.2         # DOCX text extraction
+
+# ─── Monitoring ────────────────────────────────────────────────────────────
+prometheus-client==0.21.1
 
 # ─── Testing ───────────────────────────────────────────────────────────────
 pytest==8.3.4

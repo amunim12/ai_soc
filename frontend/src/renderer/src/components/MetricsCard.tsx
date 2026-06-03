@@ -13,7 +13,7 @@ export default function MetricsCard({
   sub,
   accentColor = 'linear-gradient(90deg, #8b5cf6, #38bdf8)',
   icon,
-  delay = 0,
+  delay = 0
 }: MetricsCardProps) {
   return (
     <div

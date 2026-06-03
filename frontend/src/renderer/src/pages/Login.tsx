@@ -9,13 +9,13 @@ interface LoginProps {
 export default function Login({ onLogin }: LoginProps) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [loading, setLoading]   = useState(false)
-  const [error, setError]       = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   // Fallback credentials read from build-time env vars (set DEFAULT_ADMIN_PASSWORD / DEFAULT_ANALYST_PASSWORD in .env)
   const FALLBACK_USERS: Record<string, { password: string; role: 'admin' | 'analyst' }> = {
-    'admin':   { password: import.meta.env.VITE_DEFAULT_ADMIN_PASSWORD ?? '', role: 'admin' },
-    'analyst': { password: import.meta.env.VITE_DEFAULT_ANALYST_PASSWORD ?? '', role: 'analyst' },
+    admin: { password: import.meta.env.VITE_DEFAULT_ADMIN_PASSWORD ?? '', role: 'admin' },
+    analyst: { password: import.meta.env.VITE_DEFAULT_ANALYST_PASSWORD ?? '', role: 'analyst' }
   }
 
   async function submit(e: React.FormEvent) {
@@ -25,10 +25,10 @@ export default function Login({ onLogin }: LoginProps) {
     try {
       const res = await api.login(username, password)
       const user: AuthUser = {
-        username:     res.username,
-        role:         res.role as 'admin' | 'analyst',
+        username: res.username,
+        role: res.role as 'admin' | 'analyst',
         access_token: res.access_token,
-        expires_in:   res.expires_in,
+        expires_in: res.expires_in
       }
       saveAuth(user)
       onLogin(user)
@@ -38,9 +38,9 @@ export default function Login({ onLogin }: LoginProps) {
       if (fallback && fallback.password === password) {
         const user: AuthUser = {
           username,
-          role:         fallback.role,
+          role: fallback.role,
           access_token: 'local-dev-token',
-          expires_in:   28800,
+          expires_in: 28800
         }
         saveAuth(user)
         onLogin(user)
@@ -60,20 +60,23 @@ export default function Login({ onLogin }: LoginProps) {
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'column',
-        gap: 32,
+        gap: 32
       }}
     >
       {/* Logo */}
       <div style={{ textAlign: 'center' }}>
         <div
           style={{
-            width: 64, height: 64,
+            width: 64,
+            height: 64,
             background: 'linear-gradient(135deg, #8b5cf6, #38bdf8)',
             borderRadius: 16,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             fontSize: 32,
             margin: '0 auto 16px',
-            boxShadow: '0 0 32px rgba(139,92,246,0.4)',
+            boxShadow: '0 0 32px rgba(139,92,246,0.4)'
           }}
         >
           ⚔
@@ -85,10 +88,7 @@ export default function Login({ onLogin }: LoginProps) {
       </div>
 
       {/* Card */}
-      <div
-        className="glass animate-in"
-        style={{ width: 360, padding: 32 }}
-      >
+      <div className="glass animate-in" style={{ width: 360, padding: 32 }}>
         <div style={{ fontSize: 15, fontWeight: 700, color: '#e2e8f0', marginBottom: 4 }}>
           Analyst Sign-In
         </div>
@@ -98,7 +98,15 @@ export default function Login({ onLogin }: LoginProps) {
 
         <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div>
-            <div style={{ fontSize: 11, color: '#64748b', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            <div
+              style={{
+                fontSize: 11,
+                color: '#64748b',
+                marginBottom: 5,
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em'
+              }}
+            >
               Username
             </div>
             <input
@@ -106,12 +114,20 @@ export default function Login({ onLogin }: LoginProps) {
               type="text"
               autoComplete="username"
               value={username}
-              onChange={e => setUsername(e.target.value)}
+              onChange={(e) => setUsername(e.target.value)}
               required
             />
           </div>
           <div>
-            <div style={{ fontSize: 11, color: '#64748b', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            <div
+              style={{
+                fontSize: 11,
+                color: '#64748b',
+                marginBottom: 5,
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em'
+              }}
+            >
               Password
             </div>
             <input
@@ -119,7 +135,7 @@ export default function Login({ onLogin }: LoginProps) {
               type="password"
               autoComplete="current-password"
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
@@ -132,7 +148,7 @@ export default function Login({ onLogin }: LoginProps) {
                 border: '1px solid rgba(248,113,113,0.25)',
                 borderRadius: 6,
                 color: '#f87171',
-                fontSize: 12,
+                fontSize: 12
               }}
             >
               {error}
@@ -157,10 +173,11 @@ export default function Login({ onLogin }: LoginProps) {
             border: '1px solid rgba(56,189,248,0.12)',
             borderRadius: 6,
             fontSize: 11,
-            color: '#64748b',
+            color: '#64748b'
           }}
         >
-          Set <code style={{ color: '#94a3b8' }}>VITE_DEFAULT_ADMIN_PASSWORD</code> in <code style={{ color: '#94a3b8' }}>.env</code> before use.
+          Set <code style={{ color: '#94a3b8' }}>VITE_DEFAULT_ADMIN_PASSWORD</code> in{' '}
+          <code style={{ color: '#94a3b8' }}>.env</code> before use.
         </div>
       </div>
     </div>

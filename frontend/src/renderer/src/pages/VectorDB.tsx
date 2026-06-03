@@ -7,7 +7,7 @@ const COLLECTIONS = [
   'wazuh_rules',
   'past_incidents',
   'nist_csf',
-  'custom_intel',
+  'custom_intel'
 ]
 
 export default function VectorDB() {
@@ -56,7 +56,9 @@ export default function VectorDB() {
       form.append('collection', selectedCollection)
       form.append('source', file.name)
       const res = await api.ragUpload(form)
-      setResult(`✓ Ingested ${res.ingested_chunks} chunks into "${res.collection}" (SHA256: ${res.sha256.slice(0, 12)}…)`)
+      setResult(
+        `✓ Ingested ${res.ingested_chunks} chunks into "${res.collection}" (SHA256: ${res.sha256.slice(0, 12)}…)`
+      )
       setFile(null)
       await loadCollections()
     } catch (e) {
@@ -85,7 +87,10 @@ export default function VectorDB() {
           {/* Drop zone */}
           <div
             className="glass"
-            onDragOver={e => { e.preventDefault(); setDragging(true) }}
+            onDragOver={(e) => {
+              e.preventDefault()
+              setDragging(true)
+            }}
             onDragLeave={() => setDragging(false)}
             onDrop={onDrop}
             onClick={() => inputRef.current?.click()}
@@ -100,7 +105,7 @@ export default function VectorDB() {
               border: `2px dashed ${dragging ? 'rgba(139,92,246,0.6)' : 'rgba(56,189,248,0.2)'}`,
               background: dragging ? 'rgba(139,92,246,0.06)' : undefined,
               transition: 'all 0.15s',
-              minHeight: 200,
+              minHeight: 200
             }}
           >
             <input
@@ -108,17 +113,22 @@ export default function VectorDB() {
               type="file"
               accept=".pdf,.docx"
               style={{ display: 'none' }}
-              onChange={e => e.target.files?.[0] && setFile(e.target.files[0])}
+              onChange={(e) => e.target.files?.[0] && setFile(e.target.files[0])}
             />
             {file ? (
               <>
                 <div style={{ fontSize: 36 }}>📄</div>
                 <div style={{ fontWeight: 600, color: '#e2e8f0' }}>{file.name}</div>
-                <div style={{ fontSize: 12, color: '#64748b' }}>{fileSizeMB} MB · {file.type || 'document'}</div>
+                <div style={{ fontSize: 12, color: '#64748b' }}>
+                  {fileSizeMB} MB · {file.type || 'document'}
+                </div>
                 <button
                   className="btn btn-ghost"
                   style={{ fontSize: 11 }}
-                  onClick={e => { e.stopPropagation(); setFile(null) }}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setFile(null)
+                  }}
                 >
                   Remove
                 </button>
@@ -136,7 +146,7 @@ export default function VectorDB() {
           <div className="glass" style={{ padding: 16 }}>
             <div className="section-title">Target Collection</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              {COLLECTIONS.map(col => (
+              {COLLECTIONS.map((col) => (
                 <button
                   key={col}
                   onClick={() => setSelectedCollection(col)}
@@ -147,9 +157,10 @@ export default function VectorDB() {
                     fontWeight: 600,
                     cursor: 'pointer',
                     border: `1px solid ${selectedCollection === col ? 'rgba(139,92,246,0.5)' : 'rgba(255,255,255,0.08)'}`,
-                    background: selectedCollection === col ? 'rgba(139,92,246,0.15)' : 'transparent',
+                    background:
+                      selectedCollection === col ? 'rgba(139,92,246,0.15)' : 'transparent',
                     color: selectedCollection === col ? '#c4b5fd' : '#64748b',
-                    transition: 'all 0.15s',
+                    transition: 'all 0.15s'
                   }}
                 >
                   {col}
@@ -159,12 +170,30 @@ export default function VectorDB() {
           </div>
 
           {error && (
-            <div style={{ padding: '10px 14px', background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.2)', borderRadius: 6, color: '#f87171', fontSize: 12 }}>
+            <div
+              style={{
+                padding: '10px 14px',
+                background: 'rgba(248,113,113,0.1)',
+                border: '1px solid rgba(248,113,113,0.2)',
+                borderRadius: 6,
+                color: '#f87171',
+                fontSize: 12
+              }}
+            >
               ⚠ {error}
             </div>
           )}
           {result && (
-            <div style={{ padding: '10px 14px', background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)', borderRadius: 6, color: '#34d399', fontSize: 12 }}>
+            <div
+              style={{
+                padding: '10px 14px',
+                background: 'rgba(52,211,153,0.1)',
+                border: '1px solid rgba(52,211,153,0.2)',
+                borderRadius: 6,
+                color: '#34d399',
+                fontSize: 12
+              }}
+            >
               {result}
             </div>
           )}
@@ -175,7 +204,13 @@ export default function VectorDB() {
             disabled={!file || uploading}
             style={{ justifyContent: 'center', padding: '11px 0' }}
           >
-            {uploading ? <><span className="spinner" /> Ingesting…</> : '⊕ Ingest Document'}
+            {uploading ? (
+              <>
+                <span className="spinner" /> Ingesting…
+              </>
+            ) : (
+              '⊕ Ingest Document'
+            )}
           </button>
         </div>
 
@@ -192,25 +227,29 @@ export default function VectorDB() {
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {collections.map(col => (
+              {collections.map((col) => (
                 <div
                   key={col.name}
                   style={{
-                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
                     padding: '8px 10px',
                     background: 'rgba(255,255,255,0.03)',
                     borderRadius: 6,
-                    border: '1px solid rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(255,255,255,0.05)'
                   }}
                 >
                   <span style={{ fontSize: 12, color: '#94a3b8' }}>{col.name}</span>
                   <span
                     style={{
-                      fontSize: 11, fontWeight: 700,
-                      padding: '2px 7px', borderRadius: 99,
+                      fontSize: 11,
+                      fontWeight: 700,
+                      padding: '2px 7px',
+                      borderRadius: 99,
                       background: 'rgba(139,92,246,0.12)',
                       color: '#c4b5fd',
-                      border: '1px solid rgba(139,92,246,0.2)',
+                      border: '1px solid rgba(139,92,246,0.2)'
                     }}
                   >
                     {col.count}
