@@ -1,0 +1,15 @@
+# Master compose — starts the complete AI SOC stack in dependency order.
+#
+# Usage:
+#   docker compose -f docker-compose.full.yml --env-file backend/.env up -d
+#   docker compose -f docker-compose.full.yml down
+#
+# Individual stacks can be run independently:
+#   docker compose -f backend/docker-compose.yml up -d           # core pipeline
+#   docker compose -f monitoring/docker-compose.monitoring.yml up -d  # observability
+#   docker compose -f wazuh-docker/single-node/docker-compose.yml up -d  # SIEM
+
+include:
+  - path: backend/docker-compose.yml
+  - path: monitoring/docker-compose.monitoring.yml
+  - path: wazuh-docker/single-node/docker-compose.yml
