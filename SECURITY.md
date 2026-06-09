@@ -8,7 +8,7 @@ AI SOC processes live security events, analyst decisions, and threat intelligenc
 
 ## Table of Contents
 
-- [Supported versions](#supported-versions)
+- [Supported Versions](#supported-versions)
 - [Air-gap requirements](#air-gap-requirements)
 - [Network isolation architecture](#network-isolation-architecture)
 - [Credential and secret management](#credential-and-secret-management)
@@ -23,7 +23,7 @@ AI SOC processes live security events, analyst decisions, and threat intelligenc
 
 ---
 
-## Supported versions
+## Supported Versions
 
 Only the latest release on the `main` branch receives security fixes. Deployments running older commits must upgrade before requesting security support.
 
