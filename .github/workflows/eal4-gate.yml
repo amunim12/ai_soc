@@ -29,7 +29,7 @@ env:
   USE_MOCK_TI: "true"
   SOAR_ENABLED: "false"
   REDIS_URL: "redis://localhost:6379/0"
-
+  SHUFFLE_API_KEY: "ci-only-not-for-production-shuffle-key-1234567890abcdef"
 jobs:
   eal4-gate:
     name: "EAL4 Compliance Gate (CC EAL4)"
