@@ -76,24 +76,19 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install SAST tools
-        run: pip install bandit semgrep
+        run: pip install bandit bandit-sarif-formatter semgrep
 
       - name: Bandit — security anti-patterns
         working-directory: backend
         run: |
           bandit -r . \
             --exclude .venv314,tests,__pycache__ \
-            --format json \
-            --output bandit-results.json || true
+            --format sarif \
+            --output bandit-results.sarif || true
           bandit -r . \
             --exclude .venv314,tests,__pycache__ \
             --severity-level high \
             --confidence-level high
-      - name: Convert Bandit JSON to SARIF
-        if: always()
-        run: |
-          pip install bandit-sarif-formatter
-          bandit-sarif-formatter -i backend/bandit-results.json -o backend/bandit-results.sarif || true
 
       - name: Upload Bandit SARIF
         if: always()
