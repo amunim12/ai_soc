@@ -83,12 +83,17 @@ jobs:
         run: |
           bandit -r . \
             --exclude .venv314,tests,__pycache__ \
-            --format sarif \
-            --output bandit-results.sarif || true
+            --format json \
+            --output bandit-results.json || true
           bandit -r . \
             --exclude .venv314,tests,__pycache__ \
             --severity-level high \
             --confidence-level high
+      - name: Convert Bandit JSON to SARIF
+        if: always()
+        run: |
+          pip install bandit-sarif-formatter
+          bandit-sarif-formatter -i backend/bandit-results.json -o backend/bandit-results.sarif || true
 
       - name: Upload Bandit SARIF
         if: always()
