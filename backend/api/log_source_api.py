@@ -20,8 +20,9 @@ import logging
 from typing import Any, Optional
 
 import httpx
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
+from api.auth_api import get_current_user
 from config.settings import settings
 from infrastructure.log_source_store import log_source_store
 from infrastructure.wazuh_client import wazuh_get, wazuh_post, wazuh_ssl
@@ -109,7 +110,11 @@ async def get_log_source(source_id: str) -> LogSource:
 
 
 @router.put("/{source_id}", response_model=LogSource)
-async def update_log_source(source_id: str, body: LogSourceUpdate) -> LogSource:
+async def update_log_source(
+    source_id: str,
+    body: LogSourceUpdate,
+    current_user: dict = Depends(get_current_user),
+) -> LogSource:
     if body.soar_actions is not None:
         invalid = [a for a in body.soar_actions if a not in AVAILABLE_SOAR_ACTIONS]
         if invalid:
@@ -121,7 +126,10 @@ async def update_log_source(source_id: str, body: LogSourceUpdate) -> LogSource:
 
 
 @router.delete("/{source_id}", status_code=204)
-async def delete_log_source(source_id: str) -> None:
+async def delete_log_source(
+    source_id: str,
+    current_user: dict = Depends(get_current_user),
+) -> None:
     deleted = await log_source_store.delete(source_id)
     if not deleted:
         raise HTTPException(404, "Log source not found")
@@ -227,7 +235,10 @@ async def get_enrollment_instructions(source_id: str) -> EnrollmentInstructions:
 
 
 @router.post("/{source_id}/test-soar", response_model=SoarTestResult)
-async def test_soar_connection(source_id: str) -> SoarTestResult:
+async def test_soar_connection(
+    source_id: str,
+    current_user: dict = Depends(get_current_user),
+) -> SoarTestResult:
     """Test whether Shuffle SOAR is reachable and the API key is valid."""
     src = await log_source_store.get(source_id)
     if not src:

@@ -75,7 +75,11 @@ async def require_admin(user: dict = Depends(get_current_user)) -> dict:
 
 
 @router.post("/login", response_model=LoginResponse)
-async def login(body: LoginRequest, request: Request) -> LoginResponse:
+async def login(
+    body: LoginRequest,
+    request: Request,
+    _: Optional[HTTPAuthorizationCredentials] = Depends(bearer),
+) -> LoginResponse:
     """Authenticate and receive a JWT. Every attempt is SOC2 audit-logged."""
     ip = request.client.host if request.client else ""
     ua = request.headers.get("user-agent", "")

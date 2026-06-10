@@ -11,9 +11,10 @@ from __future__ import annotations
 import logging
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import JSONResponse
 
+from api.auth_api import get_current_user
 from schemas.alert import WazuhAlert
 from infrastructure.kafka_client import kafka_producer
 from infrastructure.sqlite_client import sqlite_client
@@ -26,7 +27,10 @@ TOPIC_ALERTS = "ALERTS"
 
 
 @router.post("/ingest", response_model=dict)
-async def ingest_alert(alert: WazuhAlert) -> dict:
+async def ingest_alert(
+    alert: WazuhAlert,
+    current_user: dict = Depends(get_current_user),
+) -> dict:
     """
     Ingest a single WazuhAlert into the pipeline.
     
