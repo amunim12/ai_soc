@@ -158,7 +158,7 @@ jobs:
         uses: bridgecrewio/checkov-action@master
         with:
           directory: .
-          framework: dockerfile,kubernetes,docker_compose
+          framework: dockerfile,kubernetes,yaml
           output_format: sarif
           output_file_path: checkov-results.sarif
           soft_fail: true
