@@ -124,7 +124,10 @@ async def alert_summary() -> dict:
 
 
 @router.delete("/{alert_id}", response_model=dict)
-async def delete_alert(alert_id: str) -> dict:
+async def delete_alert(
+    alert_id: str,
+    current_user: dict = Depends(get_current_user),
+) -> dict:
     """
     Delete an alert by ID (soft delete in SQLite).
     

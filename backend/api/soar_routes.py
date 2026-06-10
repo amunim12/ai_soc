@@ -100,7 +100,10 @@ class HitlGatePayload(BaseModel):
 
 
 @router.post("/execution-result")
-async def execution_result(payload: ExecutionResultPayload) -> dict[str, bool]:
+async def execution_result(
+    payload: ExecutionResultPayload,
+    current_user: dict = Depends(get_current_user),
+) -> dict[str, bool]:
     """
     Receive workflow completion callback from Shuffle.
 
@@ -133,7 +136,10 @@ async def execution_result(payload: ExecutionResultPayload) -> dict[str, bool]:
 
 
 @router.post("/hitl-gate")
-async def hitl_gate(payload: HitlGatePayload) -> dict[str, bool]:
+async def hitl_gate(
+    payload: HitlGatePayload,
+    current_user: dict = Depends(get_current_user),
+) -> dict[str, bool]:
     """
     Receive mid-workflow HITL pause notification from Shuffle.
 
