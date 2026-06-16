@@ -97,8 +97,9 @@ async def test_soar_skips_when_not_approved():
     alert = _make_alert()
     state = _make_state(alert, approved=False)
 
-    agent = SOARAgent()
-    result = await agent.run(state)
+    with patch("agents.soar_agent.SOAR_ENABLED", True):
+        agent = SOARAgent()
+        result = await agent.run(state)
 
     assert result["soar_result"]["status"] == "SKIPPED"
 
