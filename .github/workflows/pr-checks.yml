@@ -39,6 +39,9 @@ env:
   SOAR_ENABLED: "false"
   PLAYBOOK_FAST_MODE: "true"
   REDIS_URL: "redis://localhost:6379/0"
+  LOCAL_LLM_BASE_URL: "http://localhost:8001/v1"
+  LOCAL_LLM_MODEL: "ci-mock-model"
+  LOCAL_LLM_API_KEY: "ci-not-real"
 
 jobs:
   # ── Stage 1: Secrets Scan ──────────────────────────────────────────────────
