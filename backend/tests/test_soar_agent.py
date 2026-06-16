@@ -74,7 +74,10 @@ async def test_soar_returns_immediately_without_waiting():
     agent = SOARAgent()
     agent.shuffle = mock_shuffle
 
-    with patch("agents.soar_agent.kafka_producer") as mock_kafka:
+    with (
+        patch("agents.soar_agent.kafka_producer") as mock_kafka,
+        patch("agents.soar_agent.SOAR_ENABLED", True),
+    ):
         mock_kafka.send = AsyncMock()
         returned_state = await agent.run(state)
 
