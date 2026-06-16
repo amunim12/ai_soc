@@ -287,19 +287,19 @@ jobs:
           category: trivy
 
       - name: Grype — second-opinion container scan
+        id: grype
         uses: anchore/scan-action@v3
         with:
           image: ai-soc-api:ci
           fail-build: false
           severity-cutoff: critical
           output-format: sarif
-          output-file: grype-results.sarif
 
       - name: Upload Grype SARIF
-        if: always()
+        if: always() && steps.grype.outputs.sarif != ''
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: grype-results.sarif
+          sarif_file: ${{ steps.grype.outputs.sarif }}
           category: grype
 
   # ── Stage 5: SBOM ────────────────────────────────────────────────────────
