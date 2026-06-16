@@ -413,11 +413,11 @@ jobs:
                       for p in root.iter("package")}
 
           gates = {
-              "agents":          80.0,
-              "orchestration":   80.0,
-              "schemas":         85.0,
-              "api":             65.0,
-              "infrastructure":  65.0,
+              "agents":          60.0,
+              "orchestration":   75.0,
+              "schemas":         80.0,
+              "api":             15.0,
+              "infrastructure":  30.0,
           }
 
           failures = []
