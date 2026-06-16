@@ -4,7 +4,14 @@ import pytest
 from config.settings import Settings
 
 
-def test_perf_settings_have_correct_defaults():
+def test_perf_settings_have_correct_defaults(monkeypatch):
+    for var in (
+        "PIPELINE_MAX_CONCURRENT_ALERTS", "KAFKA_NUM_CONSUMER_WORKERS",
+        "LLM_MAX_CONCURRENT_CALLS", "LLM_CALL_TIMEOUT_SECONDS",
+        "PLAYBOOK_CACHE_TTL_SECONDS", "RAG_CTX_CACHE_TTL_SECONDS",
+        "WAZUH_POLL_INTERVAL", "WAZUH_BATCH_SIZE", "SOAR_ENABLED",
+    ):
+        monkeypatch.delenv(var, raising=False)
     s = Settings(
         SHUFFLE_API_KEY="test-key",
         LOCAL_LLM_BASE_URL="http://localhost:8001/v1",
