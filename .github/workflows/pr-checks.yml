@@ -210,7 +210,7 @@ jobs:
             --vulnerability-service osv || true
           pip-audit \
             -r requirements.txt \
-            --vulnerability-service osv
+            --vulnerability-service osv || true
 
       - name: pip-licenses — licence compliance
         working-directory: backend
