@@ -338,6 +338,9 @@ async def alert_api_client():
     ):
         app = FastAPI()
         app.include_router(alert_api_module.router)
+        app.dependency_overrides[alert_api_module.get_current_user] = lambda: {
+            "username": "test", "role": "admin"
+        }
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
             yield ac, mock_producer, mock_sqlite
 
