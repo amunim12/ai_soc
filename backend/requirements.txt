@@ -54,7 +54,7 @@ aiosmtplib==3.0.2          # async SMTP
 
 # ─── MITRE / Threat Intel ──────────────────────────────────────────────────
 stix2==3.0.1               # MITRE ATT&CK STIX parsing
-pymisp==2.5.1              # MISP client
+pymisp==2.5.34.1              # MISP client
 OTXv2==1.5.12              # AlienVault OTX
 shodan==1.31.0             # Shodan API
 nvdlib==0.7.6              # NVD CVE lookup
