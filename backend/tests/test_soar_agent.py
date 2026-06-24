@@ -74,7 +74,10 @@ async def test_soar_returns_immediately_without_waiting():
     agent = SOARAgent()
     agent.shuffle = mock_shuffle
 
-    with patch("agents.soar_agent.kafka_producer") as mock_kafka:
+    with (
+        patch("agents.soar_agent.kafka_producer") as mock_kafka,
+        patch("agents.soar_agent.SOAR_ENABLED", True),
+    ):
         mock_kafka.send = AsyncMock()
         returned_state = await agent.run(state)
 
@@ -94,8 +97,9 @@ async def test_soar_skips_when_not_approved():
     alert = _make_alert()
     state = _make_state(alert, approved=False)
 
-    agent = SOARAgent()
-    result = await agent.run(state)
+    with patch("agents.soar_agent.SOAR_ENABLED", True):
+        agent = SOARAgent()
+        result = await agent.run(state)
 
     assert result["soar_result"]["status"] == "SKIPPED"
 
@@ -124,7 +128,10 @@ async def test_soar_trigger_failure_does_not_detach_task():
     agent = SOARAgent()
     agent.shuffle = mock_shuffle
 
-    with patch("agents.soar_agent.kafka_producer") as mock_kafka:
+    with (
+        patch("agents.soar_agent.kafka_producer") as mock_kafka,
+        patch("agents.soar_agent.SOAR_ENABLED", True),
+    ):
         mock_kafka.send = AsyncMock()
         result = await agent.run(state)
 
@@ -150,7 +157,10 @@ async def test_soar_resume_publishes_audit_on_success():
     async def record_send(topic, payload, **kwargs):
         published_topics.append(topic)
 
-    with patch("agents.soar_agent.kafka_producer") as mock_kafka:
+    with (
+        patch("agents.soar_agent.kafka_producer") as mock_kafka,
+        patch("agents.soar_agent.SOAR_ENABLED", True),
+    ):
         mock_kafka.send = record_send
         await agent.run(state)
         await asyncio.sleep(0.05)

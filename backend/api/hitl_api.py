@@ -16,7 +16,7 @@ import os
 from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Depends
 from pydantic import BaseModel
 from typing import Optional
 
@@ -26,6 +26,7 @@ from schemas.audit import AuditEntry, StepLog
 from infrastructure.sqlite_client import sqlite_client
 from infrastructure.kafka_client import kafka_producer
 from api.metrics_middleware import prometheus_middleware, metrics_endpoint
+from api.auth_api import get_current_user
 from datetime import datetime
 from starlette.middleware.base import BaseHTTPMiddleware
 
@@ -81,6 +82,7 @@ async def submit_decision(
     review_id: str,
     body: DecisionRequest,
     background_tasks: BackgroundTasks,
+    current_user: dict = Depends(get_current_user),
 ) -> DecisionResponse:
     """
     Analyst submits a decision for a pending HITL review.
