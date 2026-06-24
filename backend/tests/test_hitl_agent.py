@@ -115,7 +115,7 @@ def test_has_irreversible_none(agent):
 
 @pytest.mark.asyncio
 async def test_run_fast_decision():
-    """Simulates analyst responding immediately."""
+    """run() parks the alert and returns immediately; decision is processed in a detached task."""
     import agents.hitl_agent as hitl_mod
     from agents.hitl_agent import HITLAgent
 
@@ -141,11 +141,12 @@ async def test_run_fast_decision():
         patch.object(agent, "_notify_slack", new=AsyncMock()),
         patch.object(agent, "_notify_email", new=AsyncMock()),
         patch.object(agent, "_notify_electron", new=AsyncMock()),
+        patch.object(agent, "_resume_after_decision", new=AsyncMock()),
         patch("agents.hitl_agent.POLL_INTERVAL", 0),
     ):
         result = await agent.run(state)
 
-    assert result["hitl_decision"].action == "APPROVE"
-    assert result["approved"] is True
+    assert result["pipeline_stage"] == "hitl_pending"
+    assert result["hitl_review_id"] == "REV-FAST"
     assert len(result["audit_trail"]) == 1
     assert result["audit_trail"][0].agent == "hitl"

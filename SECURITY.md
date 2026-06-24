@@ -8,8 +8,8 @@ AI SOC processes live security events, analyst decisions, and threat intelligenc
 
 ## Table of Contents
 
-- [Supported versions](#supported-versions)
-- [Air-gap requirements](#air-gap-requirements)
+- [Supported Versions](#supported-versions)
+- [Air-Gap requirements](#air-gap-requirements)
 - [Network isolation architecture](#network-isolation-architecture)
 - [Credential and secret management](#credential-and-secret-management)
 - [Authentication and access control](#authentication-and-access-control)
@@ -23,13 +23,13 @@ AI SOC processes live security events, analyst decisions, and threat intelligenc
 
 ---
 
-## Supported versions
+## Supported Versions
 
 Only the latest release on the `main` branch receives security fixes. Deployments running older commits must upgrade before requesting security support.
 
 ---
 
-## Air-gap requirements
+## Air-Gap requirements
 
 This system is designed and tested for **fully air-gapped deployment**. The following requirements are mandatory in all production environments.
 
