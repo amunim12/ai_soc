@@ -1,6 +1,6 @@
 # ─── Core Framework ────────────────────────────────────────────────────────
 langgraph==0.2.62
-langchain-core==0.3.28
+langchain-core==1.3.3
 
 # ─── Local LLM Inference ───────────────────────────────────────────────────
 # openai SDK is used as the client for vLLM's OpenAI-compatible REST API.
