@@ -21,7 +21,7 @@ langchain-core==0.3.28
 #   LOCAL_LLM_MODEL=meta-llama/Llama-3.3-70B-Instruct
 openai==2.40.0              # OpenAI-compatible client for vLLM API calls
 pydantic==2.9.2
-pydantic-settings==2.14.1
+pydantic-settings==2.14.2
 
 # ─── Kafka ─────────────────────────────────────────────────────────────────
 confluent-kafka==2.14.2
@@ -41,7 +41,7 @@ fakeredis==2.26.2          # used in tests
 
 # ─── API ───────────────────────────────────────────────────────────────────
 fastapi==0.115.6
-python-multipart==0.0.9
+python-multipart==0.0.31
 uvicorn[standard]==0.32.1
 
 # ─── Database ──────────────────────────────────────────────────────────────
@@ -64,7 +64,7 @@ geoip2==4.8.0              # MaxMind GeoIP2
 python-dotenv==1.0.1
 pyyaml==6.0.2
 orjson==3.10.12
-tenacity==9.0.0            # retry logic
+tenacity==9.1.4            # retry logic
 structlog==24.4.0          # structured logging
 rich==13.9.4               # pretty terminal output
 
@@ -83,3 +83,4 @@ prometheus-client==0.21.1
 pytest==8.3.4
 pytest-asyncio==1.4.0
 pytest-mock==3.14.0
+pytest-cov==6.0.0

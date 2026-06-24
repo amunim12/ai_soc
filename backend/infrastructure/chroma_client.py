@@ -73,7 +73,7 @@ def _hash_embed(text: str) -> list[float]:
     tokens = re.findall(r"[a-zA-Z0-9]+", text.lower())
     vec = np.zeros(_EMBED_DIM, dtype=np.float32)
     for tok in tokens:
-        idx = int(hashlib.md5(tok.encode()).hexdigest(), 16) % _EMBED_DIM
+        idx = int(hashlib.md5(tok.encode(), usedforsecurity=False).hexdigest(), 16) % _EMBED_DIM
         vec[idx] += 1.0
     norm = np.linalg.norm(vec)
     if norm > 0:

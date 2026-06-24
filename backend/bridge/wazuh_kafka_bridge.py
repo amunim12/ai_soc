@@ -140,8 +140,10 @@ class WazuhKafkaBridge:
 
     def _parse_alert(self, raw: dict) -> Optional[WazuhAlert]:
         """Convert Wazuh API alert dict → WazuhAlert schema."""
+        if "rule" not in raw:
+            return None
         try:
-            rule = raw.get("rule", {})
+            rule = raw["rule"]
             agent = raw.get("agent", {})
             data = raw.get("data", {})
 
