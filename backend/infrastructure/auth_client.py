@@ -66,9 +66,8 @@ else:
     import secrets as _secrets
     DEFAULT_ADMIN_PASSWORD = _secrets.token_urlsafe(24)
     log.warning(
-        "DEFAULT_ADMIN_PASSWORD not set — generated for this run: %s  "
-        "(set this in .env to persist across restarts)",
-        DEFAULT_ADMIN_PASSWORD,
+        "DEFAULT_ADMIN_PASSWORD not set — generated for this run. "
+        "Set DEFAULT_ADMIN_PASSWORD in .env to persist across restarts."
     )
 
 
