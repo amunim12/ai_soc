@@ -101,3 +101,6 @@ vendor/docker/
 
 .claude
 .mcp.json
+
+# ─── Local research / docs (not for repo) ────────────────────────────────────
+FYP_Research_Paper.md
