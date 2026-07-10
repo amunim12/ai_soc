@@ -61,7 +61,8 @@ Key cross-boundary links — all in-cluster pods reaching host-based services fo
 
 | Caller (in-cluster) | Target (Docker Compose, same host) | Env var |
 |---|---|---|
-| `wazuh-bridge` | Wazuh Manager REST API, port 55000 | `WAZUH_MANAGER_HOST` |
+| `wazuh-bridge` | Wazuh Manager REST API, port 55000 | `WAZUH_API_URL` (+ `WAZUH_USER`/`WAZUH_PASSWORD` via Secret) |
+| `wazuh-bridge` | Wazuh Indexer (OpenSearch), port 9200 | `WAZUH_INDEXER_URL` (+ indexer creds via Secret) |
 | `orchestrator` | vLLM inference server, port 8001 | `LOCAL_LLM_BASE_URL` |
 | `orchestrator` | Shuffle SOAR (playbook execution), if `SOAR_ENABLED=true` | `SHUFFLE_BASE_URL` |
 
