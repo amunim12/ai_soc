@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-soc-orchestrator
+  namespace: ai-soc
+  labels:
+    app: ai-soc-orchestrator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-soc-orchestrator
+  template:
+    metadata:
+      labels:
+        app: ai-soc-orchestrator
+    spec:
+      containers:
+        - name: orchestrator
+          image: ghcr.io/amunim12/ai-soc-api:latest
+          command: ["python"]
+          args: ["-m", "orchestration.graph"]
+          envFrom:
+            - configMapRef:
+                name: ai-soc-config
+            - configMapRef:
+                name: ai-soc-site-config
+            - secretRef:
+                name: ai-soc-secrets
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              cpu: "2"
+              memory: "1Gi"
