@@ -30,9 +30,10 @@ from typing import Any, Optional
 
 import aiosqlite
 import httpx
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 
+from api.auth_api import get_current_user
 from config.settings import settings
 from infrastructure.kafka_client import kafka_producer
 from infrastructure.sqlite_client import sqlite_client, SQLITE_DB_PATH
@@ -99,7 +100,10 @@ class HitlGatePayload(BaseModel):
 
 
 @router.post("/execution-result")
-async def execution_result(payload: ExecutionResultPayload) -> dict[str, bool]:
+async def execution_result(
+    payload: ExecutionResultPayload,
+    current_user: dict = Depends(get_current_user),
+) -> dict[str, bool]:
     """
     Receive workflow completion callback from Shuffle.
 
@@ -132,7 +136,10 @@ async def execution_result(payload: ExecutionResultPayload) -> dict[str, bool]:
 
 
 @router.post("/hitl-gate")
-async def hitl_gate(payload: HitlGatePayload) -> dict[str, bool]:
+async def hitl_gate(
+    payload: HitlGatePayload,
+    current_user: dict = Depends(get_current_user),
+) -> dict[str, bool]:
     """
     Receive mid-workflow HITL pause notification from Shuffle.
 
@@ -215,6 +222,7 @@ async def hitl_gate(payload: HitlGatePayload) -> dict[str, bool]:
 async def hitl_approve(
     execution_id: str,
     analyst_id:   str = Query(..., description="Analyst user ID"),
+    current_user: dict = Depends(get_current_user),
 ) -> dict[str, bool]:
     """
     Analyst approves a pending HITL Shuffle execution.
@@ -314,6 +322,7 @@ async def hitl_reject(
     execution_id: str,
     analyst_id:   str = Query(..., description="Analyst user ID"),
     reason:       str = Query("", description="Optional rejection reason"),
+    current_user: dict = Depends(get_current_user),
 ) -> dict[str, bool]:
     """
     Analyst rejects a pending HITL Shuffle execution.
