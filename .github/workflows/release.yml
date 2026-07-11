@@ -317,6 +317,11 @@ jobs:
           # exactly one rollout revision — making rollout undo revert to the
           # previous release rather than an intermediate :latest revision.
           sed -i "s|image: ghcr.io/amunim12/ai-soc-api:latest|image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}|" k8s/app/*.yaml
+          PINNED=$(grep -rc "image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}" k8s/app/ | awk -F: '{s+=$2} END {print s}')
+          if [ "$PINNED" != "3" ]; then
+            echo "::error::Image pin substitution hit $PINNED lines instead of 3 — did a manifest's image line drift from the expected pattern?"
+            exit 1
+          fi
           kubectl apply -f k8s/app/ -n ${{ env.NAMESPACE }}
 
       - name: Wait for rollout
