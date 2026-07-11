@@ -95,9 +95,10 @@ section, on this same machine.
 
 ## 5. First deploy
 
-Normally the first `kubectl apply` happens automatically via `release.yml`'s
-`deploy-k3s` job on the next tagged release. To bootstrap manually before the
-first release (so there's something for `kubectl set image` to update later):
+Normally deployment happens automatically via `release.yml`'s `deploy-k3s` job
+on the next tagged release: it applies these same manifests idempotently and
+then updates the image on all three app Deployments (api, orchestrator,
+wazuh-bridge). To bootstrap manually before the first release:
 
 ```bash
 kubectl apply -f k8s/namespace.yaml
@@ -124,17 +125,23 @@ kubectl logs -n ai-soc deployment/ai-soc-wazuh-bridge --tail=50
 
 **Read the bridge logs carefully.** Wrong Wazuh credentials do NOT crash the
 pod — the bridge's poll loop swallows auth failures and retries forever, so the
-pod will show `Running` while ingesting nothing. Look specifically for repeated
-401/authentication errors or token-request failures in the log output; a
-healthy bridge shows successful token acquisition and periodic alert fetches.
+pod will show `Running` while ingesting nothing. The underlying HTTP status
+usually is not printed directly: repeated `Bridge polling error` lines starting
+immediately after startup almost always mean bad Wazuh credentials. A healthy
+bridge shows periodic alert fetches with no repeating errors. (If Wazuh itself
+is not running yet, start it per section 4 first — a connection-refused error
+here means Wazuh is down, not that the credentials are wrong.)
 
 ```bash
 # Orchestrator is consuming from Kafka:
 kubectl logs -n ai-soc deployment/ai-soc-orchestrator --tail=50
 # Expected: consumer loop running, no crash loop
 
-# End-to-end: generate a synthetic alert from the host and confirm it's processed
-cd backend && python -m scripts.synthetic_log_generator --eps 1 --duration 10
+# End-to-end: generate a synthetic alert and confirm it's processed.
+# Kafka is only reachable inside the cluster, so run the generator from the
+# API pod (it has the right image and environment):
+kubectl exec -n ai-soc deployment/ai-soc-api -- \
+  python -m scripts.synthetic_log_generator --eps 1 --duration 10
 ```
 
 Then check `http://localhost:8080/api/activity` shows the new alert within ~30s.
