@@ -298,26 +298,41 @@ jobs:
     # Only deploy tags that are not pre-releases
     if: "!contains(github.ref_name, '-rc') && !contains(github.ref_name, '-beta') && !contains(github.ref_name, '-alpha')"
     environment: production
+    env:
+      NAMESPACE: ai-soc
     steps:
       - uses: actions/checkout@v6
 
-      - name: Update K3s deployment image tag
+      - name: Apply K8s manifests (idempotent — creates on first run, updates on later runs)
         run: |
-          kubectl set image deployment/ai-soc-api \
-            api=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }} \
-            --namespace=ai-soc
+          kubectl apply -f k8s/namespace.yaml
+          kubectl apply -f k8s/configmap.yaml
+          kubectl apply -f k8s/infra/ -n ${{ env.NAMESPACE }}
+          kubectl apply -f k8s/app/ -n ${{ env.NAMESPACE }}
+
+      - name: Update deployment image tags
+        run: |
+          for deploy in ai-soc-api ai-soc-orchestrator ai-soc-wazuh-bridge; do
+            container=$(echo "$deploy" | sed 's/ai-soc-//')
+            kubectl set image deployment/"$deploy" \
+              "$container"=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }} \
+              --namespace=${{ env.NAMESPACE }}
+          done
 
       - name: Wait for rollout
+        id: rollout
         run: |
-          kubectl rollout status deployment/ai-soc-api \
-            --namespace=ai-soc \
-            --timeout=5m
+          for deploy in ai-soc-api ai-soc-orchestrator ai-soc-wazuh-bridge; do
+            kubectl rollout status deployment/"$deploy" \
+              --namespace=${{ env.NAMESPACE }} \
+              --timeout=5m
+          done
 
       - name: Smoke test — health check
+        id: smoke
         run: |
           for i in $(seq 1 10); do
-            STATUS=$(kubectl exec -n ai-soc deployment/ai-soc-api -- \
-              curl -sf http://localhost:8000/health -o /dev/null -w "%{http_code}" 2>/dev/null || echo "000")
+            STATUS=$(curl -sf http://localhost:8080/health -o /dev/null -w "%{http_code}" 2>/dev/null || echo "000")
             if [ "$STATUS" = "200" ]; then
               echo "Health check passed (attempt $i)"
               exit 0
@@ -327,3 +342,13 @@ jobs:
           done
           echo "Health check failed after 10 attempts"
           exit 1
+
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          for deploy in ai-soc-api ai-soc-orchestrator ai-soc-wazuh-bridge; do
+            echo "Rolling back $deploy..."
+            kubectl rollout undo deployment/"$deploy" --namespace=${{ env.NAMESPACE }}
+            kubectl rollout status deployment/"$deploy" --namespace=${{ env.NAMESPACE }} --timeout=3m || true
+          done
+          echo "::error::Deploy failed — rolled back to previous image."
