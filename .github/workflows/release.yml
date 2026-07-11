@@ -308,20 +308,23 @@ jobs:
           kubectl apply -f k8s/namespace.yaml
           kubectl apply -f k8s/configmap.yaml
           kubectl apply -f k8s/infra/ -n ${{ env.NAMESPACE }}
-          kubectl apply -f k8s/app/ -n ${{ env.NAMESPACE }}
 
-      - name: Update deployment image tags
+      - name: Apply app Deployments pinned to the release image
         run: |
-          for deploy in ai-soc-api ai-soc-orchestrator ai-soc-wazuh-bridge; do
-            container=$(echo "$deploy" | sed 's/ai-soc-//')
-            kubectl set image deployment/"$deploy" \
-              "$container"=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }} \
-              --namespace=${{ env.NAMESPACE }}
-          done
+          # The checked-in manifests default to :latest as a bootstrap value.
+          # Pin them to this release's tag before applying, so kubectl apply is
+          # the single owner of the image field and each release produces
+          # exactly one rollout revision — making rollout undo revert to the
+          # previous release rather than an intermediate :latest revision.
+          sed -i "s|image: ghcr.io/amunim12/ai-soc-api:latest|image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}|" k8s/app/*.yaml
+          kubectl apply -f k8s/app/ -n ${{ env.NAMESPACE }}
 
       - name: Wait for rollout
         id: rollout
         run: |
+          # Note: orchestrator and wazuh-bridge have no readiness probes, so
+          # rollout status only confirms their pods started — a config-driven
+          # crash loop moments later is not caught here (see docs/K3S_SETUP.md).
           for deploy in ai-soc-api ai-soc-orchestrator ai-soc-wazuh-bridge; do
             kubectl rollout status deployment/"$deploy" \
               --namespace=${{ env.NAMESPACE }} \
@@ -346,9 +349,20 @@ jobs:
       - name: Rollback on failure
         if: failure()
         run: |
+          ROLLBACK_FAILED=""
           for deploy in ai-soc-api ai-soc-orchestrator ai-soc-wazuh-bridge; do
             echo "Rolling back $deploy..."
-            kubectl rollout undo deployment/"$deploy" --namespace=${{ env.NAMESPACE }}
-            kubectl rollout status deployment/"$deploy" --namespace=${{ env.NAMESPACE }} --timeout=3m || true
+            if ! kubectl rollout undo deployment/"$deploy" --namespace=${{ env.NAMESPACE }}; then
+              echo "::warning::No previous revision for $deploy — nothing to roll back to (first deploy?)"
+              ROLLBACK_FAILED="$ROLLBACK_FAILED $deploy"
+              continue
+            fi
+            if ! kubectl rollout status deployment/"$deploy" --namespace=${{ env.NAMESPACE }} --timeout=3m; then
+              ROLLBACK_FAILED="$ROLLBACK_FAILED $deploy"
+            fi
           done
-          echo "::error::Deploy failed — rolled back to previous image."
+          if [ -n "$ROLLBACK_FAILED" ]; then
+            echo "::error::Deploy failed and rollback did not complete cleanly for:$ROLLBACK_FAILED — manual intervention required."
+          else
+            echo "::error::Deploy failed — all deployments rolled back to the previous revision."
+          fi
