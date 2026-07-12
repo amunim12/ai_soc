@@ -1,0 +1,5 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-soc-wazuh-bridge
+$patch: delete

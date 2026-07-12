@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-soc-api
+  labels:
+    app: ai-soc-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-soc-api
+  template:
+    metadata:
+      labels:
+        app: ai-soc-api
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/amunim12/ai-soc-api:latest
+          command: ["uvicorn"]
+          args: ["main:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "2"]
+          ports:
+            - containerPort: 8080
+              name: http
+          envFrom:
+            - configMapRef:
+                name: ai-soc-config
+            - configMapRef:
+                name: ai-soc-site-config
+            - secretRef:
+                name: ai-soc-secrets
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+            limits:
+              cpu: "1"
+              memory: "512Mi"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 5

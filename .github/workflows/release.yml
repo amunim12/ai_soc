@@ -290,34 +290,120 @@ jobs:
           draft: false
           prerelease: ${{ contains(github.ref_name, '-rc') || contains(github.ref_name, '-beta') || contains(github.ref_name, '-alpha') }}
 
-  # ── Stage 5: Deploy to K3s (self-hosted runner) ───────────────────────────
-  deploy-k3s:
-    name: "Stage 5 · Deploy to K3s"
+  # ── Stage 5a: Deploy to Staging (self-hosted runner) ─────────────────────
+  deploy-staging:
+    name: "Stage 5a · Deploy to Staging"
     runs-on: [self-hosted, k3s]
     needs: github-release
     # Only deploy tags that are not pre-releases
     if: "!contains(github.ref_name, '-rc') && !contains(github.ref_name, '-beta') && !contains(github.ref_name, '-alpha')"
-    environment: production
+    env:
+      NAMESPACE: ai-soc-staging
     steps:
       - uses: actions/checkout@v7
 
-      - name: Update K3s deployment image tag
+      - name: Pin release image in staging overlay
         run: |
-          kubectl set image deployment/ai-soc-api \
-            api=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }} \
-            --namespace=ai-soc
+          sed -i "s|newTag: .*|newTag: ${{ github.ref_name }}|" k8s/overlays/staging/kustomization.yaml
+          PINNED=$(kubectl kustomize k8s/overlays/staging | grep -c "image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}")
+          if [ "$PINNED" != "2" ]; then
+            echo "::error::Staging render contains $PINNED pinned image refs instead of 2 — image name or overlay images block drifted?"
+            exit 1
+          fi
+
+      - name: Apply staging overlay
+        run: kubectl apply -k k8s/overlays/staging
 
       - name: Wait for rollout
         run: |
-          kubectl rollout status deployment/ai-soc-api \
-            --namespace=ai-soc \
-            --timeout=5m
+          for deploy in ai-soc-api ai-soc-orchestrator; do
+            kubectl rollout status deployment/"$deploy" \
+              --namespace=${{ env.NAMESPACE }} \
+              --timeout=5m
+          done
+
+      - name: Staging health check
+        run: |
+          for i in $(seq 1 10); do
+            STATUS=$(curl -sf http://localhost:8081/health -o /dev/null -w "%{http_code}" 2>/dev/null || echo "000")
+            if [ "$STATUS" = "200" ]; then
+              echo "Staging health check passed (attempt $i)"
+              exit 0
+            fi
+            echo "Attempt $i: status=$STATUS — retrying in 10s"
+            sleep 10
+          done
+          echo "Staging health check failed after 10 attempts"
+          exit 1
+
+      - name: End-to-end synthetic alert verification
+        run: |
+          sum_activity() {
+            curl -sf http://localhost:8081/api/activity \
+              | python3 -c "import json,sys; print(sum(int(e.get('count', 0)) for e in json.load(sys.stdin)))"
+          }
+          BEFORE=$(sum_activity || echo 0)
+          echo "Activity count before injection: $BEFORE"
+          kubectl exec -n ${{ env.NAMESPACE }} deployment/ai-soc-api -- \
+            python -m scripts.synthetic_log_generator --eps 1 --duration 10
+          for i in $(seq 1 40); do
+            AFTER=$(sum_activity || echo 0)
+            if [ "$AFTER" -gt "$BEFORE" ]; then
+              echo "End-to-end verification passed: activity $BEFORE -> $AFTER (attempt $i)"
+              exit 0
+            fi
+            echo "Attempt $i: activity still $AFTER — retrying in 5s"
+            sleep 5
+          done
+          echo "::error::Synthetic alert never appeared in staging /api/activity — pipeline is not processing."
+          exit 1
+
+      - name: Report staging failure
+        if: failure()
+        run: |
+          echo "::error::Staging deploy or verification failed for ${{ github.ref_name }}. Production was not touched. Staging is left running in namespace ${{ env.NAMESPACE }} for debugging."
+
+  # ── Stage 5b: Promote to Production (manual approval via environment) ─────
+  deploy-production:
+    name: "Stage 5b · Promote to Production"
+    runs-on: [self-hosted, k3s]
+    needs: deploy-staging
+    # The 'production' GitHub Environment must be configured with a required
+    # reviewer (repo Settings → Environments → production) — that setting is
+    # what turns this job into a manual approval gate. See docs/K3S_SETUP.md.
+    environment: production
+    env:
+      NAMESPACE: ai-soc
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Pin release image in production overlay
+        run: |
+          sed -i "s|newTag: .*|newTag: ${{ github.ref_name }}|" k8s/overlays/production/kustomization.yaml
+          PINNED=$(kubectl kustomize k8s/overlays/production | grep -c "image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}")
+          if [ "$PINNED" != "3" ]; then
+            echo "::error::Production render contains $PINNED pinned image refs instead of 3 — image name or overlay images block drifted?"
+            exit 1
+          fi
+
+      - name: Apply production overlay
+        run: kubectl apply -k k8s/overlays/production
+
+      - name: Wait for rollout
+        run: |
+          # Note: orchestrator and wazuh-bridge have no readiness probes, so
+          # rollout status only confirms their pods started — a config-driven
+          # crash loop moments later is not caught here (see docs/K3S_SETUP.md).
+          for deploy in ai-soc-api ai-soc-orchestrator ai-soc-wazuh-bridge; do
+            kubectl rollout status deployment/"$deploy" \
+              --namespace=${{ env.NAMESPACE }} \
+              --timeout=5m
+          done
 
       - name: Smoke test — health check
         run: |
           for i in $(seq 1 10); do
-            STATUS=$(kubectl exec -n ai-soc deployment/ai-soc-api -- \
-              curl -sf http://localhost:8000/health -o /dev/null -w "%{http_code}" 2>/dev/null || echo "000")
+            STATUS=$(curl -sf http://localhost:8080/health -o /dev/null -w "%{http_code}" 2>/dev/null || echo "000")
             if [ "$STATUS" = "200" ]; then
               echo "Health check passed (attempt $i)"
               exit 0
@@ -327,3 +413,33 @@ jobs:
           done
           echo "Health check failed after 10 attempts"
           exit 1
+
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          ROLLBACK_FAILED=""
+          for deploy in ai-soc-api ai-soc-orchestrator ai-soc-wazuh-bridge; do
+            echo "Rolling back $deploy..."
+            if ! kubectl rollout undo deployment/"$deploy" --namespace=${{ env.NAMESPACE }}; then
+              echo "::warning::No previous revision for $deploy — nothing to roll back to (first deploy?)"
+              ROLLBACK_FAILED="$ROLLBACK_FAILED $deploy"
+              continue
+            fi
+            if ! kubectl rollout status deployment/"$deploy" --namespace=${{ env.NAMESPACE }} --timeout=3m; then
+              ROLLBACK_FAILED="$ROLLBACK_FAILED $deploy"
+            fi
+          done
+          if [ -n "$ROLLBACK_FAILED" ]; then
+            echo "::error::Deploy failed and rollback did not complete cleanly for:$ROLLBACK_FAILED — manual intervention required."
+          else
+            echo "::error::Deploy failed — all deployments rolled back to the previous revision."
+          fi
+
+      - name: Scale down staging
+        if: success()
+        run: |
+          # Return staging's resources to the host until the next release.
+          # PVCs persist; kubectl apply -k in the next release's deploy-staging
+          # job restores replicas: 1 from the manifests.
+          kubectl scale statefulset,deployment --all --replicas=0 -n ai-soc-staging
+          echo "Staging scaled to zero."

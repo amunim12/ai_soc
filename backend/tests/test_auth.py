@@ -163,7 +163,8 @@ class TestJwtTokens:
 
     def test_tampered_signature_raises(self):
         parts = self._make().split(".")
-        parts[-1] = parts[-1][:-1] + ("A" if parts[-1][-1] != "A" else "B")
+        # Mutate the first signature character to guarantee byte-level change.
+        parts[-1] = ("A" if parts[-1][0] != "A" else "B") + parts[-1][1:]
         with pytest.raises(JWTError):
             decode_token(".".join(parts))
 
