@@ -125,11 +125,11 @@ async def update_log_source(
     return updated
 
 
-@router.delete("/{source_id}", status_code=204)
+@router.delete("/{source_id}", status_code=204, response_model=None)
 async def delete_log_source(
     source_id: str,
     current_user: dict = Depends(get_current_user),
-) -> None:
+):
     deleted = await log_source_store.delete(source_id)
     if not deleted:
         raise HTTPException(404, "Log source not found")

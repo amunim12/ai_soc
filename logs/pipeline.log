@@ -1,0 +1,34 @@
+2026-07-13 01:56:13,191 INFO infrastructure.postgres_client PostgresClient initialised \u2192 localhost:5432/soc_pipeline  pool=10–128
+2026-07-13 01:56:13,191 INFO __main__ [Pipeline] Starting 16 consumer workers \u2192 topic=wazuh.raw concurrency=512
+2026-07-13 01:56:13,192 INFO infrastructure.kafka_client KafkaConsumerClient subscribed \u2192 ['wazuh.raw']
+2026-07-13 01:56:13,193 INFO __main__ [Pipeline] Consumer worker 0 started
+2026-07-13 01:56:13,193 INFO infrastructure.kafka_client KafkaConsumerClient subscribed \u2192 ['wazuh.raw']
+2026-07-13 01:56:13,193 INFO __main__ [Pipeline] Consumer worker 1 started
+2026-07-13 01:56:13,195 INFO infrastructure.kafka_client KafkaConsumerClient subscribed \u2192 ['wazuh.raw']
+2026-07-13 01:56:13,195 INFO __main__ [Pipeline] Consumer worker 2 started
+2026-07-13 01:56:13,195 INFO infrastructure.kafka_client KafkaConsumerClient subscribed \u2192 ['wazuh.raw']
+2026-07-13 01:56:13,196 INFO __main__ [Pipeline] Consumer worker 3 started
+2026-07-13 01:56:13,198 INFO infrastructure.kafka_client KafkaConsumerClient subscribed \u2192 ['wazuh.raw']
+2026-07-13 01:56:13,198 INFO __main__ [Pipeline] Consumer worker 4 started
+2026-07-13 01:56:13,203 INFO infrastructure.kafka_client KafkaConsumerClient subscribed \u2192 ['wazuh.raw']
+2026-07-13 01:56:13,203 INFO __main__ [Pipeline] Consumer worker 5 started
+2026-07-13 01:56:13,205 INFO infrastructure.kafka_client KafkaConsumerClient subscribed \u2192 ['wazuh.raw']
+2026-07-13 01:56:13,205 INFO __main__ [Pipeline] Consumer worker 6 started
+2026-07-13 01:56:13,207 INFO infrastructure.kafka_client KafkaConsumerClient subscribed \u2192 ['wazuh.raw']
+2026-07-13 01:56:13,207 INFO __main__ [Pipeline] Consumer worker 7 started
+2026-07-13 01:56:13,209 INFO infrastructure.kafka_client KafkaConsumerClient subscribed \u2192 ['wazuh.raw']
+2026-07-13 01:56:13,210 INFO __main__ [Pipeline] Consumer worker 8 started
+2026-07-13 01:56:13,211 INFO infrastructure.kafka_client KafkaConsumerClient subscribed \u2192 ['wazuh.raw']
+2026-07-13 01:56:13,211 INFO __main__ [Pipeline] Consumer worker 9 started
+2026-07-13 01:56:13,223 INFO infrastructure.kafka_client KafkaConsumerClient subscribed \u2192 ['wazuh.raw']
+2026-07-13 01:56:13,224 INFO __main__ [Pipeline] Consumer worker 10 started
+2026-07-13 01:56:13,226 INFO infrastructure.kafka_client KafkaConsumerClient subscribed \u2192 ['wazuh.raw']
+2026-07-13 01:56:13,226 INFO __main__ [Pipeline] Consumer worker 11 started
+2026-07-13 01:56:13,228 INFO infrastructure.kafka_client KafkaConsumerClient subscribed \u2192 ['wazuh.raw']
+2026-07-13 01:56:13,228 INFO __main__ [Pipeline] Consumer worker 12 started
+2026-07-13 01:56:13,230 INFO infrastructure.kafka_client KafkaConsumerClient subscribed \u2192 ['wazuh.raw']
+2026-07-13 01:56:13,230 INFO __main__ [Pipeline] Consumer worker 13 started
+2026-07-13 01:56:13,231 INFO infrastructure.kafka_client KafkaConsumerClient subscribed \u2192 ['wazuh.raw']
+2026-07-13 01:56:13,231 INFO __main__ [Pipeline] Consumer worker 14 started
+2026-07-13 01:56:13,233 INFO infrastructure.kafka_client KafkaConsumerClient subscribed \u2192 ['wazuh.raw']
+2026-07-13 01:56:13,233 INFO __main__ [Pipeline] Consumer worker 15 started
