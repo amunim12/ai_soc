@@ -130,6 +130,9 @@ jobs:
     name: "Stage 3 · Electron · ${{ matrix.name }}"
     # Runs in parallel with sbom-attest — no dependency on Docker stages.
     runs-on: ${{ matrix.runner }}
+    # One platform failing (e.g. Linux packaging) must not block Stage 4 from
+    # releasing the installers that did build successfully.
+    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
