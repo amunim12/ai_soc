@@ -1,25 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ai-soc-wazuh-bridge
-  namespace: ai-soc
+  name: ai-soc-orchestrator
   labels:
-    app: ai-soc-wazuh-bridge
+    app: ai-soc-orchestrator
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ai-soc-wazuh-bridge
+      app: ai-soc-orchestrator
   template:
     metadata:
       labels:
-        app: ai-soc-wazuh-bridge
+        app: ai-soc-orchestrator
     spec:
       containers:
-        - name: wazuh-bridge
+        - name: orchestrator
           image: ghcr.io/amunim12/ai-soc-api:latest
           command: ["python"]
-          args: ["-m", "bridge.wazuh_kafka_bridge"]
+          args: ["-m", "orchestration.graph"]
           envFrom:
             - configMapRef:
                 name: ai-soc-config
@@ -29,8 +28,8 @@ spec:
                 name: ai-soc-secrets
           resources:
             requests:
-              cpu: "100m"
-              memory: "128Mi"
-            limits:
               cpu: "500m"
-              memory: "256Mi"
+              memory: "512Mi"
+            limits:
+              cpu: "2"
+              memory: "1Gi"

@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ai-soc-api
-  namespace: ai-soc
   labels:
     app: ai-soc-api
 spec:
