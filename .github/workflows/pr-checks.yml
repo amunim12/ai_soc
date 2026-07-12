@@ -552,6 +552,21 @@ jobs:
           chmod +x kubeconform
           sudo mv kubeconform /usr/local/bin/kubeconform
 
-      - name: Validate K8s manifests
+      - name: Install kustomize
         run: |
-          find k8s -name '*.yaml' -print0 | xargs -0 kubeconform -strict -summary
+          curl -sL -o kustomize.tar.gz \
+            "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.4.3/kustomize_v5.4.3_linux_amd64.tar.gz"
+          tar -xzf kustomize.tar.gz
+          chmod +x kustomize
+          sudo mv kustomize /usr/local/bin/kustomize
+
+      - name: Validate raw base manifests
+        run: |
+          find k8s/base -name '*.yaml' ! -name 'kustomization.yaml' -print0 \
+            | xargs -0 kubeconform -strict -summary
+
+      - name: Validate rendered production overlay
+        run: kustomize build k8s/overlays/production | kubeconform -strict -summary -
+
+      - name: Validate rendered staging overlay
+        run: kustomize build k8s/overlays/staging | kubeconform -strict -summary -
