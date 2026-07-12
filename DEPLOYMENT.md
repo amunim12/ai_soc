@@ -17,7 +17,7 @@
 
 This is the easiest path. The installer bundles all configuration and starts services via a guided wizard.
 
-1. Download the installer for your OS from the [Releases page](https://github.com/amunim12/ai-soc/releases/latest):
+1. Download the installer for your OS from the [Releases page](https://github.com/amunim12/ai_soc/releases/latest):
    - **Windows:** `AI SOC Setup X.Y.Z.exe`
    - **macOS:** `AI SOC X.Y.Z.dmg`
    - **Linux:** `AI SOC-X.Y.Z.AppImage` or `.deb`
@@ -43,8 +43,8 @@ This is the easiest path. The installer bundles all configuration and starts ser
 ### 1. Clone and configure
 
 ```bash
-git clone https://github.com/amunim12/ai-soc.git
-cd ai-soc
+git clone https://github.com/amunim12/ai_soc.git
+cd ai_soc
 cp backend/.env.example backend/.env
 ```
 

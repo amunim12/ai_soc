@@ -3,7 +3,7 @@
 // Deploy this alongside your website; point your download button to /api/download/windows
 
 const OWNER = 'amunim12';
-const REPO  = 'ai-soc';
+const REPO  = 'ai_soc';
 
 export default async function handler(req, res) {
   try {
