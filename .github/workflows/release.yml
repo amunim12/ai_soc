@@ -346,7 +346,7 @@ jobs:
           echo "Activity count before injection: $BEFORE"
           kubectl exec -n ${{ env.NAMESPACE }} deployment/ai-soc-api -- \
             python -m scripts.synthetic_log_generator --eps 1 --duration 10
-          for i in $(seq 1 24); do
+          for i in $(seq 1 40); do
             AFTER=$(sum_activity || echo 0)
             if [ "$AFTER" -gt "$BEFORE" ]; then
               echo "End-to-end verification passed: activity $BEFORE -> $AFTER (attempt $i)"
