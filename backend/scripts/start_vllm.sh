@@ -1,26 +1,36 @@
 #!/usr/bin/env bash
 # ─────────────────────────────────────────────────────────────────────────────
-# start_vllm.sh — Start the vLLM inference server (Qwen2.5 72B Instruct AWQ)
+# start_vllm.sh — Start the vLLM inference server
 #
 # Run this inside WSL2 BEFORE starting the FastAPI pipeline.
 # The pipeline connects to this server at http://localhost:8001/v1
 #
 # Usage:
-#   bash scripts/start_vllm.sh                  # AWQ INT4 quantized (recommended)
-#   bash scripts/start_vllm.sh --full           # full BF16 model (requires 2× A100)
-#   bash scripts/start_vllm.sh --install         # install vLLM first, then start
+#   bash scripts/start_vllm.sh                  # Qwen2.5-7B AWQ INT4 — fits 1x RTX 3060 12GB (default)
+#   bash scripts/start_vllm.sh --large          # Qwen2.5-72B AWQ INT4 — needs 1x A100 80GB
+#   bash scripts/start_vllm.sh --install        # install vLLM first, then start
 # ─────────────────────────────────────────────────────────────────────────────
 set -euo pipefail
 
 # ── Configuration ─────────────────────────────────────────────────────────────
-MODEL_QUANTIZED="Qwen/Qwen2.5-72B-Instruct-AWQ"   # AWQ INT4 — ~36 GB VRAM, fits 1× A100
-MODEL_FULL="Qwen/Qwen2.5-72B-Instruct"             # BF16 — ~144 GB VRAM, requires 2× A100
+MODEL_BUDGET="Qwen/Qwen2.5-7B-Instruct-AWQ"        # AWQ INT4 — ~6 GB VRAM, fits 1x RTX 3060 12GB
+MODEL_LARGE="Qwen/Qwen2.5-72B-Instruct-AWQ"         # AWQ INT4 — ~36 GB VRAM, needs 1x A100 80GB
 PORT=8001
 HOST="0.0.0.0"
-MAX_MODEL_LEN=32768        # handles long Wazuh log contexts
-TENSOR_PARALLEL=2          # span both A100 80 GB GPUs for max throughput
-GPU_MEM_UTIL=0.90          # use 90 % of VRAM for KV cache
-MAX_NUM_SEQS=64            # matches LLM_MAX_CONCURRENT_CALLS in .env
+
+# Budget profile (default): single consumer GPU, PLAYBOOK_FAST_MODE=true upstream
+# means the LLM only handles the fallback/uncategorised path, so it doesn't
+# need deep concurrency or a huge context window.
+MAX_MODEL_LEN_BUDGET=8192
+TENSOR_PARALLEL_BUDGET=1
+GPU_MEM_UTIL_BUDGET=0.85
+MAX_NUM_SEQS_BUDGET=16          # matches LLM_MAX_CONCURRENT_CALLS in .env
+
+# Large profile: server-grade multi-GPU box
+MAX_MODEL_LEN_LARGE=32768
+TENSOR_PARALLEL_LARGE=2
+GPU_MEM_UTIL_LARGE=0.90
+MAX_NUM_SEQS_LARGE=64
 
 # Load HuggingFace token from .env if not already set in environment
 if [[ -z "${HUGGING_FACE_HUB_TOKEN:-}" ]]; then
@@ -37,25 +47,24 @@ if [[ -z "${HUGGING_FACE_HUB_TOKEN:-}" ]]; then
     echo "  Or add it to .env: HUGGING_FACE_HUB_TOKEN=hf_..."
     echo ""
     echo "Get your token at: https://huggingface.co/settings/tokens"
-    echo "Accept the model license at: https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct"
     exit 1
 fi
 
 export HUGGING_FACE_HUB_TOKEN
 
 # ── Parse arguments ───────────────────────────────────────────────────────────
-USE_QUANTIZED=true
+USE_LARGE=false
 DO_INSTALL=false
 
 for arg in "$@"; do
     case "$arg" in
-        --full|-f)          USE_QUANTIZED=false ;;
+        --large|-l)         USE_LARGE=true ;;
         --install|-i)       DO_INSTALL=true ;;
         --help|-h)
-            echo "Usage: bash scripts/start_vllm.sh [--install] [--full]"
+            echo "Usage: bash scripts/start_vllm.sh [--install] [--large]"
             echo "  --install   pip install vllm before starting"
-            echo "  --full      use full BF16 model (~144 GB VRAM, 2× A100 required)"
-            echo "  (default)   AWQ INT4 quantized model (~36 GB VRAM, 1× A100 sufficient)"
+            echo "  --large     Qwen2.5-72B AWQ INT4 (~36 GB VRAM, 1x A100 80GB required)"
+            echo "  (default)   Qwen2.5-7B AWQ INT4 (~6 GB VRAM, fits 1x RTX 3060 12GB)"
             exit 0
             ;;
     esac
@@ -77,27 +86,32 @@ if ! python -c "import vllm" 2>/dev/null; then
     exit 1
 fi
 
-# ── Select model ──────────────────────────────────────────────────────────────
-if [[ "$USE_QUANTIZED" == true ]]; then
-    MODEL="$MODEL_QUANTIZED"
-    DTYPE="float16"
+# ── Select profile ─────────────────────────────────────────────────────────────
+if [[ "$USE_LARGE" == true ]]; then
+    MODEL="$MODEL_LARGE"
+    MAX_MODEL_LEN="$MAX_MODEL_LEN_LARGE"
+    TENSOR_PARALLEL="$TENSOR_PARALLEL_LARGE"
+    GPU_MEM_UTIL="$GPU_MEM_UTIL_LARGE"
+    MAX_NUM_SEQS="$MAX_NUM_SEQS_LARGE"
     QUANT_ARGS="--quantization awq --kv-cache-dtype fp8_e5m2"
-    echo ">>> Using AWQ INT4 quantized model (~36 GB VRAM per GPU)"
+    echo ">>> Using Qwen2.5-72B AWQ INT4 (~36 GB VRAM, 1x A100 80GB required)"
 else
-    MODEL="$MODEL_FULL"
-    DTYPE="bfloat16"
-    QUANT_ARGS=""
-    echo ">>> Using full BF16 model (~144 GB VRAM, 2× A100 required)"
+    MODEL="$MODEL_BUDGET"
+    MAX_MODEL_LEN="$MAX_MODEL_LEN_BUDGET"
+    TENSOR_PARALLEL="$TENSOR_PARALLEL_BUDGET"
+    GPU_MEM_UTIL="$GPU_MEM_UTIL_BUDGET"
+    MAX_NUM_SEQS="$MAX_NUM_SEQS_BUDGET"
+    QUANT_ARGS="--quantization awq"
+    echo ">>> Using Qwen2.5-7B AWQ INT4 (~6 GB VRAM, fits 1x RTX 3060 12GB)"
 fi
 
 # ── Print summary ─────────────────────────────────────────────────────────────
 echo ""
 echo "════════════════════════════════════════════════"
-echo "  vLLM Server — Qwen2.5 72B Instruct AWQ"
+echo "  vLLM Server"
 echo "════════════════════════════════════════════════"
 echo "  Model       : $MODEL"
 echo "  Port        : $PORT"
-echo "  dtype       : $DTYPE"
 echo "  TP size     : $TENSOR_PARALLEL"
 echo "  Context len : $MAX_MODEL_LEN tokens"
 echo "  Max seqs    : $MAX_NUM_SEQS concurrent"
@@ -108,6 +122,7 @@ echo ""
 echo "  Pipeline .env should have:"
 echo "  LOCAL_LLM_BASE_URL=http://localhost:$PORT/v1"
 echo "  LOCAL_LLM_MODEL=$MODEL"
+echo "  LLM_MAX_CONCURRENT_CALLS=$MAX_NUM_SEQS"
 echo "════════════════════════════════════════════════"
 echo ""
 echo "Waiting for model to load (this can take several minutes)..."
@@ -116,7 +131,7 @@ echo ""
 # ── Start vLLM server ─────────────────────────────────────────────────────────
 python -m vllm.entrypoints.openai.api_server \
     --model "$MODEL" \
-    --dtype "$DTYPE" \
+    --dtype "float16" \
     --port "$PORT" \
     --host "$HOST" \
     --max-model-len "$MAX_MODEL_LEN" \

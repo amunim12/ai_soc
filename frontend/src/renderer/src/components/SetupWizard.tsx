@@ -24,7 +24,7 @@ export function SetupWizard({ onComplete }: Props) {
     POSTGRES_PASSWORD: '',
     REDIS_PASSWORD: '',
     LOCAL_LLM_BASE_URL: 'http://localhost:8001/v1',
-    LOCAL_LLM_MODEL: 'Qwen/Qwen2.5-72B-Instruct-AWQ',
+    LOCAL_LLM_MODEL: 'Qwen/Qwen2.5-7B-Instruct-AWQ',
     DEFAULT_ADMIN_PASSWORD: ''
   })
 
@@ -73,7 +73,7 @@ export function SetupWizard({ onComplete }: Props) {
       LOG_LEVEL: 'INFO',
       PIPELINE_MAX_CONCURRENT_ALERTS: '512',
       KAFKA_NUM_CONSUMER_WORKERS: '16',
-      LLM_MAX_CONCURRENT_CALLS: '64',
+      LLM_MAX_CONCURRENT_CALLS: '16',
       LLM_CALL_TIMEOUT_SECONDS: '30.0',
       PLAYBOOK_CACHE_TTL_SECONDS: '3600',
       RAG_CTX_CACHE_TTL_SECONDS: '3600',

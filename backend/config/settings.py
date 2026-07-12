@@ -97,7 +97,7 @@ class Settings(BaseSettings):
     # Pipeline concurrency & throughput
     PIPELINE_MAX_CONCURRENT_ALERTS: int   = 512
     KAFKA_NUM_CONSUMER_WORKERS:     int   = 16
-    LLM_MAX_CONCURRENT_CALLS:       int   = 64
+    LLM_MAX_CONCURRENT_CALLS:       int   = 16
     LLM_CALL_TIMEOUT_SECONDS:       float = 30.0
     PLAYBOOK_CACHE_TTL_SECONDS:     int   = 3600
     RAG_CTX_CACHE_TTL_SECONDS:      int   = 3600
@@ -130,7 +130,7 @@ class Settings(BaseSettings):
 
     LOCAL_LLM_BASE_URL:     Optional[str] = None
 
-    LOCAL_LLM_MODEL:        str  = "Qwen/Qwen2.5-72B-Instruct-AWQ"
+    LOCAL_LLM_MODEL:        str  = "Qwen/Qwen2.5-7B-Instruct-AWQ"
 
     LOCAL_LLM_API_KEY:      str  = "local-vllm-key"
 
