@@ -92,7 +92,8 @@
         { "target": "deb", "arch": ["x64"] }
       ],
       "icon": "resources/icon.png",
-      "category": "System"
+      "category": "System",
+      "maintainer": "AI SOC Contributors <noreply@github.com>"
     },
     "publish": {
       "provider": "github",
