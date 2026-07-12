@@ -47,7 +47,7 @@ relies on it to bind port 8080 on the host.
 
 ## 2. Register the self-hosted GitHub Actions runner
 
-`release.yml`'s `deploy-k3s` job targets `runs-on: [self-hosted, k3s]`. Register
+`release.yml`'s `deploy-staging` and `deploy-production` jobs target `runs-on: [self-hosted, k3s]`. Register
 this machine as a runner with that label:
 
 1. In the GitHub repo: Settings → Actions → Runners → New self-hosted runner
@@ -170,7 +170,7 @@ If any pod is stuck in `CrashLoopBackOff`, check `kubectl describe pod -n ai-soc
   processed normally, but geo-context fields (country/city/coordinates) come
   back as an error object instead of data. Follow-up: mount the `.mmdb` via a
   hostPath or PVC if geo-enrichment matters to your analysts.
-- **SOAR is disabled by default.** `SOAR_ENABLED=false` in `k8s/configmap.yaml`,
+- **SOAR is disabled by default.** `SOAR_ENABLED=false` in `k8s/base/configmap.yaml`,
   and the Secret's `SHUFFLE_API_KEY` is a dummy value. If you enable SOAR, also
   replace `SHUFFLE_API_KEY` with a real key from your Shuffle instance.
 - **Pod security hardening is pending.** The StatefulSets/Deployments do not yet
