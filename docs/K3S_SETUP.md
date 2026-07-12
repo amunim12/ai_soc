@@ -56,6 +56,15 @@ this machine as a runner with that label:
 3. Install as a service so it survives reboots: `sudo ./svc.sh install && sudo ./svc.sh start`
 4. Verify the runner shows "Idle" in Settings → Actions → Runners
 
+### 2.1 One-time: production approval gate
+
+`release.yml`'s `deploy-production` job pauses on the **production** GitHub
+Environment. To make that pause a real approval gate (it is a no-op without
+this): repo Settings → Environments → `production` → **Required reviewers** →
+add the people allowed to approve production deploys. This is repository
+configuration, not code — it cannot be committed, so treat this step as
+mandatory setup.
+
 ## 3. Bootstrap secrets and site config
 
 Clone the repo onto this machine, then run the setup script once:
@@ -77,8 +86,11 @@ The script prompts for:
 - **Wazuh indexer user + password** — fallback path querying the OpenSearch
   indexer (port 9200) directly; defaults to admin / the API password
 
-It creates the `ai-soc-secrets` Secret and `ai-soc-site-config` ConfigMap.
-**Save the admin password it prints — it is not stored anywhere else.**
+It creates an independent `ai-soc-secrets` Secret and `ai-soc-site-config`
+ConfigMap in **both** the `ai-soc` (production) and `ai-soc-staging`
+namespaces — staging gets its own randomly generated credentials.
+**Save the admin passwords it prints (one per namespace) — they are not
+stored anywhere else.**
 
 Re-running the script is safe: if `ai-soc-secrets` already exists it is left
 untouched (rotating it would break Postgres/Redis auth against data the PVCs
@@ -95,16 +107,17 @@ section, on this same machine.
 
 ## 5. First deploy
 
-Normally deployment happens automatically via `release.yml`'s `deploy-k3s` job
-on the next tagged release: it applies these same manifests idempotently and
-then updates the image on all three app Deployments (api, orchestrator,
-wazuh-bridge). To bootstrap manually before the first release:
+Normally deployment happens automatically on the next tagged release:
+`release.yml` first deploys to the `ai-soc-staging` namespace and verifies it
+end-to-end with a synthetic alert (staging API listens on port **8081**), then
+waits for a human to approve the **production** environment in the Actions UI,
+and only then applies the production overlay and updates all three app
+Deployments. After a successful promotion, staging is scaled to zero to return
+its resources; its PVCs persist and the next release's staging deploy restores
+it. To bootstrap production manually before the first release:
 
 ```bash
-kubectl apply -f k8s/namespace.yaml
-kubectl apply -f k8s/configmap.yaml
-kubectl apply -f k8s/infra/ -n ai-soc
-kubectl apply -f k8s/app/ -n ai-soc
+kubectl apply -k k8s/overlays/production
 kubectl get pods -n ai-soc -w
 ```
 
@@ -163,3 +176,8 @@ If any pod is stuck in `CrashLoopBackOff`, check `kubectl describe pod -n ai-soc
 - **Pod security hardening is pending.** The StatefulSets/Deployments do not yet
   set `securityContext`/`fsGroup`; the current images handle their own privilege
   dropping, but hardened/distroless image swaps will need this added.
+- **Staging shares the host's Wazuh but does not poll it.** The staging
+  namespace runs the full pipeline minus the wazuh-bridge; release verification
+  uses synthetic alerts. If you need staging to process real alerts ad-hoc,
+  its secrets already contain the Wazuh credentials — deploy the bridge into
+  `ai-soc-staging` manually from `k8s/base/app/wazuh-bridge-deployment.yaml`.
