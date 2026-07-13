@@ -42,6 +42,35 @@ services:
       retries: 10
       start_period: 30s
 
+  # ─── One-shot Kafka topic bootstrap ────────────────────────────────────────
+  # KAFKA_AUTO_CREATE_TOPICS_ENABLE=false (intentional — avoids default
+  # partition counts) means these topics never exist on a fresh install unless
+  # something creates them. Without this, ai-soc-orchestrator crash-loops with
+  # UnknownTopicOrPartitionError on first run.
+  kafka-init:
+    image: apache/kafka:3.7.0
+    container_name: kafka-init
+    depends_on:
+      kafka:
+        condition: service_healthy
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        set -e
+        create() {
+          /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9094 \
+            --create --if-not-exists --topic "$$1" --partitions "$$2" \
+            --replication-factor 1 --config retention.ms="$$3"
+        }
+        create wazuh.raw 24 86400000
+        create wazuh.analysed 4 604800000
+        create wazuh.enriched 4 604800000
+        create wazuh.playbooks 4 604800000
+        create wazuh.hitl-queue 2 604800000
+        create wazuh.soar-actions 4 2592000000
+        create wazuh.audit 4 7776000000
+        create wazuh.feedback 2 604800000
+
   # ─── Redis 7 ──────────────────────────────────────────────────────────────
   redis:
     image: redis:7-alpine
@@ -129,6 +158,67 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+
+  # ─── Main FastAPI backend (the API the desktop UI talks to) ───────────────
+  ai-soc-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: ai-soc-api
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_DSN=postgresql://soc:${POSTGRES_PASSWORD}@postgres:5432/soc_pipeline
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9094
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+      - CHROMA_HOST=chromadb
+      - CHROMA_PORT=8000
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      kafka:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    healthcheck:
+      # Same rationale as chromadb: python:3.11-slim has no curl/wget.
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/8000' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 15s
+
+  # ─── LangGraph pipeline consumer (processes wazuh.raw off Kafka) ──────────
+  ai-soc-orchestrator:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: ai-soc-orchestrator
+    command: ["python", "-m", "orchestration.graph"]
+    environment:
+      - POSTGRES_DSN=postgresql://soc:${POSTGRES_PASSWORD}@postgres:5432/soc_pipeline
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9094
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+      - CHROMA_HOST=chromadb
+      - CHROMA_PORT=8000
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      kafka:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
       redis:
         condition: service_healthy
       postgres:

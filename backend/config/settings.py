@@ -108,7 +108,10 @@ class Settings(BaseSettings):
 
 
     SHUFFLE_BASE_URL: str = "http://127.0.0.1:5001"
-    SHUFFLE_API_KEY:  str = Field(..., description="Shuffle SOAR API key (required)")
+    # Only actually required when SOAR_ENABLED=true; defaulting to empty lets the
+    # app start with SOAR disabled/stubbed (e.g. the desktop app's setup wizard,
+    # which never collects this value at all).
+    SHUFFLE_API_KEY:  str = Field("", description="Shuffle SOAR API key (required when SOAR_ENABLED=true)")
     SHUFFLE_WORKFLOW_IDS_PATH: str = "/opt/config/shuffle_workflow_ids.json"
     SHUFFLE_EXECUTION_TIMEOUT: int = 900
     SHUFFLE_POLL_INTERVAL:     int = 5

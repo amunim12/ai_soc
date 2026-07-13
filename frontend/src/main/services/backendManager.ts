@@ -66,6 +66,18 @@ export async function startServices(): Promise<void> {
     return
   }
 
+  // docker-compose.yml's hitl_api service has `env_file: - .env`, which Compose
+  // resolves relative to the compose file's own directory — NOT the --env-file
+  // flag below (that only covers ${VAR} substitution within the YAML itself).
+  // Mirror the generated credentials next to the compose file so hitl_api can
+  // actually find them; without this, service startup fails every time.
+  try {
+    fs.copyFileSync(envFile, join(backendCompose, '..', '.env'))
+  } catch (err) {
+    emit({ status: 'error', message: `Failed to stage configuration: ${(err as Error).message}` })
+    return
+  }
+
   composeProcess = spawn(
     'docker',
     ['compose', '-f', backendCompose, '--env-file', envFile, 'up', '-d', '--wait'],
