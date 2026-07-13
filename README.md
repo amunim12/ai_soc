@@ -119,7 +119,7 @@ Alert ingested
 | SIEM / EDR | Wazuh 4.10.2 (Manager + Indexer + Dashboard) |
 | Message broker | Apache Kafka 3.7 (KRaft, no Zookeeper) |
 | Pipeline orchestration | LangGraph 0.2 + LangChain Core 0.3 |
-| LLM inference | Local vLLM (Meta-Llama-3.3-70B-Instruct-AWQ-INT4) |
+| LLM inference | Local vLLM (Qwen2.5-7B-Instruct-AWQ-INT4, fits 1x RTX 3060 12GB) |
 | Vector store | ChromaDB 0.5 (persistent) |
 | Embeddings | sentence-transformers (all-MiniLM-L6-v2, offline) |
 | Caching / dedup | Redis 7 |
@@ -143,7 +143,13 @@ Alert ingested
 | CPU | 8 cores | 16 cores |
 | RAM | 32 GB | 64 GB |
 | Storage | 200 GB SSD | 500 GB NVMe |
-| GPU | — | NVIDIA GPU ≥ 16 GB VRAM (for local LLM) |
+| GPU | NVIDIA GPU ≥ 8 GB VRAM (Qwen2.5-7B-AWQ) | NVIDIA RTX 3060 12GB or better |
+
+> Default config runs the 7B AWQ model with `PLAYBOOK_FAST_MODE=true`, which
+> sustains 500+ EPS on a single RTX 3060 12GB — known alert categories get an
+> instant deterministic playbook, so the LLM only handles the fallback path.
+> For higher-quality playbook generation on server-grade GPUs (A100 80GB), see
+> the `--large` flag in `backend/scripts/start_vllm.sh` (Qwen2.5-72B-AWQ).
 
 ### Software
 

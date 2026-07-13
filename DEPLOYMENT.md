@@ -5,11 +5,17 @@
 | Component | Minimum | Recommended |
 |-----------|---------|-------------|
 | RAM | 32 GB | 64 GB |
-| GPU | NVIDIA 24 GB VRAM | NVIDIA A100 80 GB |
+| GPU | NVIDIA 8 GB VRAM (Qwen2.5-7B-AWQ) | NVIDIA RTX 3060 12 GB |
 | Storage | 100 GB free (NVMe) | 500 GB NVMe |
-| CPU | 8 cores | 32 cores |
+| CPU | 8 cores | 16 cores |
 | OS | Windows 10/11 · Ubuntu 22.04 | Ubuntu 22.04 LTS |
 | Docker Desktop | 25.0+ | Latest |
+
+> This is the default budget profile — a single RTX 3060 12GB running
+> Qwen2.5-7B-Instruct-AWQ sustains 500+ EPS with `PLAYBOOK_FAST_MODE=true`
+> (deterministic templates for known alert categories; the LLM only handles
+> the fallback path). For enterprise-scale/server hardware (A100 80GB), run
+> `bash backend/scripts/start_vllm.sh --large` for the 72B model instead.
 
 ---
 
@@ -91,17 +97,22 @@ docker run --runtime nvidia --gpus all \
   -v ~/.cache/huggingface:/root/.cache/huggingface \
   -p 8001:8000 \
   vllm/vllm-openai:latest \
-  --model Qwen/Qwen2.5-72B-Instruct-AWQ \
+  --model Qwen/Qwen2.5-7B-Instruct-AWQ \
   --quantization awq \
-  --max-model-len 8192
+  --max-model-len 8192 \
+  --max-num-seqs 16 \
+  --gpu-memory-utilization 0.85
 ```
 
 Set in `backend/.env`:
 ```
 LOCAL_LLM_BASE_URL=http://localhost:8001/v1
-LOCAL_LLM_MODEL=Qwen/Qwen2.5-72B-Instruct-AWQ
+LOCAL_LLM_MODEL=Qwen/Qwen2.5-7B-Instruct-AWQ
 LOCAL_AI_ONLY=true
 ```
+
+> Have an A100-class GPU instead? Use `bash backend/scripts/start_vllm.sh --large`
+> to serve Qwen2.5-72B-Instruct-AWQ for higher-quality playbook generation.
 
 ### 4. Open the frontend
 

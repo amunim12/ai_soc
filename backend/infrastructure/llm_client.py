@@ -8,20 +8,22 @@ Speaks to a local vLLM server. Swap models by changing LOCAL_LLM_BASE_URL
 and LOCAL_LLM_MODEL in .env — no code change required.
 
     LOCAL_LLM_BASE_URL=http://localhost:8001/v1
-    LOCAL_LLM_MODEL=Qwen/Qwen2.5-72B-Instruct-AWQ
+    LOCAL_LLM_MODEL=Qwen/Qwen2.5-7B-Instruct-AWQ
 
-Start vLLM (2× A100 80 GB, AWQ INT4 quantized):
+Start vLLM (1x RTX 3060 12 GB, AWQ INT4 quantized):
     docker run --runtime nvidia --gpus all \
       -p 8001:8000 vllm/vllm-openai:latest \
-      --model Qwen/Qwen2.5-72B-Instruct-AWQ \
+      --model Qwen/Qwen2.5-7B-Instruct-AWQ \
       --dtype float16 \
       --quantization awq \
-      --kv-cache-dtype fp8_e5m2 \
-      --tensor-parallel-size 2 \
-      --max-model-len 32768 \
-      --max-num-seqs 64 \
-      --gpu-memory-utilization 0.90 \
+      --tensor-parallel-size 1 \
+      --max-model-len 8192 \
+      --max-num-seqs 16 \
+      --gpu-memory-utilization 0.85 \
       --enable-chunked-prefill
+
+For A100-class hardware running the 72B model instead, see the `--large`
+flag in scripts/start_vllm.sh.
 
 Or use the script:  bash scripts/start_vllm.sh
 

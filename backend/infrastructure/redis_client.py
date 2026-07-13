@@ -22,6 +22,10 @@ load_dotenv()
 log = logging.getLogger(__name__)
 
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+# Pool must cover full pipeline concurrency — each in-flight alert makes
+# several Redis calls (dedup/burst/malicious-IP), so it needs to be at
+# least as large as PIPELINE_MAX_CONCURRENT_ALERTS, not a small fixed cap.
+PIPELINE_MAX_CONCURRENT_ALERTS = int(os.getenv("PIPELINE_MAX_CONCURRENT_ALERTS", "512"))
 DEDUP_TTL_SECONDS = 86_400
 BURST_WINDOW_SECONDS = 60
 BURST_THRESHOLD = 3
@@ -34,13 +38,20 @@ class RedisClient:
     def __init__(self, url: str = REDIS_URL):
         self._url = url
         self._client: Optional[aioredis.Redis] = None
+        self._client_lock = asyncio.Lock()
 
     async def _get(self) -> aioredis.Redis:
         if self._client is None:
-            self._client = await aioredis.from_url(
-                self._url, encoding="utf-8", decode_responses=True,
-                max_connections=32,
-            )
+            async with self._client_lock:
+                # Re-check: another coroutine may have created it while we
+                # were waiting on the lock (was previously unguarded, which
+                # let concurrent first-callers each spin up their own pool
+                # under load and exhaust Redis's connection limit).
+                if self._client is None:
+                    self._client = await aioredis.from_url(
+                        self._url, encoding="utf-8", decode_responses=True,
+                        max_connections=PIPELINE_MAX_CONCURRENT_ALERTS,
+                    )
         return self._client
 
 

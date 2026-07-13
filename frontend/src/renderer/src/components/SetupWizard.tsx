@@ -19,12 +19,13 @@ export function SetupWizard({ onComplete }: Props) {
   const [step, setStep] = useState<Step>('docker')
   const [dockerOk, setDockerOk] = useState<boolean | null>(null)
   const [installMsg, setInstallMsg] = useState('')
+  const [installFailed, setInstallFailed] = useState(false)
   const [config, setConfig] = useState<Config>({
     JWT_SECRET_KEY: '',
     POSTGRES_PASSWORD: '',
     REDIS_PASSWORD: '',
     LOCAL_LLM_BASE_URL: 'http://localhost:8001/v1',
-    LOCAL_LLM_MODEL: 'Qwen/Qwen2.5-72B-Instruct-AWQ',
+    LOCAL_LLM_MODEL: 'Qwen/Qwen2.5-7B-Instruct-AWQ',
     DEFAULT_ADMIN_PASSWORD: ''
   })
 
@@ -53,6 +54,7 @@ export function SetupWizard({ onComplete }: Props) {
 
   async function install() {
     setStep('installing')
+    setInstallFailed(false)
     setInstallMsg('Writing configuration...')
 
     const full: Record<string, string> = {
@@ -73,7 +75,7 @@ export function SetupWizard({ onComplete }: Props) {
       LOG_LEVEL: 'INFO',
       PIPELINE_MAX_CONCURRENT_ALERTS: '512',
       KAFKA_NUM_CONSUMER_WORKERS: '16',
-      LLM_MAX_CONCURRENT_CALLS: '64',
+      LLM_MAX_CONCURRENT_CALLS: '16',
       LLM_CALL_TIMEOUT_SECONDS: '30.0',
       PLAYBOOK_CACHE_TTL_SECONDS: '3600',
       RAG_CTX_CACHE_TTL_SECONDS: '3600',
@@ -82,22 +84,48 @@ export function SetupWizard({ onComplete }: Props) {
     }
 
     await window.backend.writeEnv(full)
-    setInstallMsg('Starting AI SOC services...')
+    setInstallMsg(
+      'Starting AI SOC services… on a first run this can take several minutes while ' +
+        'Docker downloads Kafka, Postgres, Redis and ChromaDB images.'
+    )
+
+    // Surface the real backend message (including Docker/compose error detail)
+    // instead of only a generic string, so failures are actually diagnosable.
+    const unsubscribe = window.backend.onStatusChanged((state) => {
+      if (state.status === 'running') {
+        unsubscribe()
+        setInstallMsg(state.message || 'All services are running!')
+        setTimeout(onComplete, 1200)
+      } else if (state.status === 'error') {
+        unsubscribe()
+        setInstallFailed(true)
+        setInstallMsg(state.message || 'Some services failed to start.')
+      } else if (state.message) {
+        setInstallMsg(state.message)
+      }
+    })
+
     await window.backend.startServices()
 
+    // First-run image pulls (Kafka especially) can take well over the old 2-minute
+    // cap, which used to strand users on a dead-end error screen with no way back.
+    // Give it up to 15 minutes as a fallback in case the event above never fires,
+    // and always leave a way to retry or go back.
     let attempts = 0
+    const MAX_ATTEMPTS = 450 // 450 * 2s = 15 minutes
     const poll = setInterval(async () => {
       const status = await window.backend.getStatus()
       attempts++
       if (status === 'running') {
         clearInterval(poll)
+        unsubscribe()
         setInstallMsg('All services are running!')
         setTimeout(onComplete, 1200)
-      } else if (status === 'error' || attempts > 60) {
+      } else if (status === 'error' || attempts > MAX_ATTEMPTS) {
         clearInterval(poll)
-        setInstallMsg(
-          'Some services failed to start. Check that Docker Desktop is running and try again.'
-        )
+        unsubscribe()
+        setInstallFailed(true)
+        setInstallMsg((prev) => prev || 'Some services failed to start.')
       }
     }, 2000)
   }
@@ -292,9 +320,21 @@ export function SetupWizard({ onComplete }: Props) {
         {/* Step: Installing */}
         {step === 'installing' && (
           <div className="wizard-body wizard-installing">
-            <div className="install-spinner" />
-            <p className="install-title">Setting Up AI SOC</p>
+            {!installFailed && <div className="install-spinner" />}
+            <p className="install-title">
+              {installFailed ? 'Setup Did Not Finish' : 'Setting Up AI SOC'}
+            </p>
             <p className="install-msg">{installMsg}</p>
+            {installFailed && (
+              <div className="wizard-actions" style={{ justifyContent: 'center' }}>
+                <button className="btn-secondary" onClick={() => setStep('review')}>
+                  ← Back
+                </button>
+                <button className="btn-primary" onClick={install}>
+                  Retry
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

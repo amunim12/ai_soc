@@ -18,7 +18,7 @@ def test_perf_settings_have_correct_defaults(monkeypatch):
     )
     assert s.PIPELINE_MAX_CONCURRENT_ALERTS == 512
     assert s.KAFKA_NUM_CONSUMER_WORKERS == 16
-    assert s.LLM_MAX_CONCURRENT_CALLS == 64
+    assert s.LLM_MAX_CONCURRENT_CALLS == 16
     assert s.LLM_CALL_TIMEOUT_SECONDS == 30.0
     assert s.PLAYBOOK_CACHE_TTL_SECONDS == 3600
     assert s.RAG_CTX_CACHE_TTL_SECONDS == 3600

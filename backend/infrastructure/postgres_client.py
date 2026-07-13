@@ -169,8 +169,20 @@ class PostgresClient:
         start = datetime.utcnow()
         escalated = False
         conn = await asyncpg.connect(self._dsn, ssl=False)
+
+        # asyncpg has no wait_for_notification() — LISTEN/NOTIFY is
+        # callback-based via add_listener(). Bridge it to an awaitable.
+        notified = asyncio.Event()
+        matched = False
+
+        def _on_notify(_connection, _pid, _channel, payload) -> None:
+            nonlocal matched
+            if payload == review_id:
+                matched = True
+                notified.set()
+
         try:
-            await conn.execute("LISTEN hitl_decision")
+            await conn.add_listener("hitl_decision", _on_notify)
             while True:
                 elapsed = int((datetime.utcnow() - start).total_seconds())
 
@@ -186,15 +198,14 @@ class PostgresClient:
                 wait_secs = max(1.0, float(min(until_escalate, remaining, 30)))
 
                 try:
-                    notif = await asyncio.wait_for(
-                        conn.wait_for_notification(),
-                        timeout=wait_secs,
-                    )
-                    if notif.payload == review_id:
+                    await asyncio.wait_for(notified.wait(), timeout=wait_secs)
+                    if matched:
                         return await self.poll_decision(review_id)
+                    notified.clear()
                 except asyncio.TimeoutError:
                     pass
         finally:
+            await conn.remove_listener("hitl_decision", _on_notify)
             await conn.close()
 
     async def store_decision(self, decision: ApprovalDecision) -> None:

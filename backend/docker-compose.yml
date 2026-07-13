@@ -14,11 +14,18 @@ services:
       KAFKA_PROCESS_ROLES: "broker,controller"
       KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
       KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
-      KAFKA_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093"
-      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://localhost:9092"
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT"
+      # PLAINTEXT is for host processes (backend/pipeline run outside Docker);
+      # INTERNAL is for containers on the compose network (e.g. hitl_api) —
+      # "localhost" inside a container refers to itself, not this broker.
+      KAFKA_LISTENERS: "PLAINTEXT://:9092,INTERNAL://:9094,CONTROLLER://:9093"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://localhost:9092,INTERNAL://kafka:9094"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "PLAINTEXT:PLAINTEXT,INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT"
       KAFKA_INTER_BROKER_LISTENER_NAME: "PLAINTEXT"
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      # Without this, Kafka writes to its built-in default (/tmp/kraft-combined-logs),
+      # NOT the mounted volume below — every container recreation silently wiped
+      # all topics/messages/offsets. This makes the mount actually take effect.
+      KAFKA_LOG_DIRS: "/var/lib/kafka/data"
       KAFKA_NUM_PARTITIONS: "48"
       KAFKA_DEFAULT_REPLICATION_FACTOR: "1"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
@@ -34,6 +41,35 @@ services:
       timeout: 10s
       retries: 10
       start_period: 30s
+
+  # ─── One-shot Kafka topic bootstrap ────────────────────────────────────────
+  # KAFKA_AUTO_CREATE_TOPICS_ENABLE=false (intentional — avoids default
+  # partition counts) means these topics never exist on a fresh install unless
+  # something creates them. Without this, ai-soc-orchestrator crash-loops with
+  # UnknownTopicOrPartitionError on first run.
+  kafka-init:
+    image: apache/kafka:3.7.0
+    container_name: kafka-init
+    depends_on:
+      kafka:
+        condition: service_healthy
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        set -e
+        create() {
+          /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9094 \
+            --create --if-not-exists --topic "$$1" --partitions "$$2" \
+            --replication-factor 1 --config retention.ms="$$3"
+        }
+        create wazuh.raw 24 86400000
+        create wazuh.analysed 4 604800000
+        create wazuh.enriched 4 604800000
+        create wazuh.playbooks 4 604800000
+        create wazuh.hitl-queue 2 604800000
+        create wazuh.soar-actions 4 2592000000
+        create wazuh.audit 4 7776000000
+        create wazuh.feedback 2 604800000
 
   # ─── Redis 7 ──────────────────────────────────────────────────────────────
   redis:
@@ -68,7 +104,9 @@ services:
     volumes:
       - chroma_data:/chroma/chroma
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v2/heartbeat"]
+      # chromadb/chroma:latest ships no curl/wget/python — only bash+coreutils.
+      # Use bash's /dev/tcp to confirm the port accepts connections.
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/8000' || exit 1"]
       interval: 15s
       timeout: 10s
       retries: 5
@@ -78,6 +116,10 @@ services:
   postgres:
     image: postgres:16-alpine
     container_name: postgres
+    # Default max_connections=100 is exhausted by our own client pools alone
+    # (backend + pipeline + hitl_api's multiple workers each hold a 10-128
+    # connection pool) — raise it so real traffic isn't starved.
+    command: ["postgres", "-c", "max_connections=300"]
     ports:
       - "5432:5432"
     environment:
@@ -102,13 +144,84 @@ services:
     ports:
       - "8080:8080"
     environment:
+      # .env's connection strings target "localhost", which inside this
+      # container refers to itself, not the sibling containers. Override
+      # with compose network service names/ports.
       - DATABASE_URL=sqlite:////app/data/hitl.db
+      - POSTGRES_DSN=postgresql://soc:${POSTGRES_PASSWORD}@postgres:5432/soc_pipeline
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9094
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+      - CHROMA_HOST=chromadb
+      - CHROMA_PORT=8000
     volumes:
       - ./data:/app/data
     depends_on:
       kafka:
         condition: service_healthy
       redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+
+  # ─── Main FastAPI backend (the API the desktop UI talks to) ───────────────
+  ai-soc-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: ai-soc-api
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_DSN=postgresql://soc:${POSTGRES_PASSWORD}@postgres:5432/soc_pipeline
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9094
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+      - CHROMA_HOST=chromadb
+      - CHROMA_PORT=8000
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      kafka:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    healthcheck:
+      # Same rationale as chromadb: python:3.11-slim has no curl/wget.
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/8000' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 15s
+
+  # ─── LangGraph pipeline consumer (processes wazuh.raw off Kafka) ──────────
+  ai-soc-orchestrator:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: ai-soc-orchestrator
+    command: ["python", "-m", "orchestration.graph"]
+    environment:
+      - POSTGRES_DSN=postgresql://soc:${POSTGRES_PASSWORD}@postgres:5432/soc_pipeline
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9094
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+      - CHROMA_HOST=chromadb
+      - CHROMA_PORT=8000
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      kafka:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+      postgres:
         condition: service_healthy
     env_file:
       - .env
