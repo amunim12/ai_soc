@@ -26,6 +26,7 @@ env:
   PYTHON_VERSION: "3.11"
   JWT_SECRET_KEY: "ci-only-not-for-production-padding-1234567890abcdef1234567890abcdef"
   DEFAULT_ADMIN_PASSWORD: "ci-admin-password-not-production"
+  SHUFFLE_API_KEY: "ci-shuffle-api-key-not-production"
   USE_MOCK_TI: "true"
   SOAR_ENABLED: "false"
   REDIS_URL: "redis://localhost:6379/0"
