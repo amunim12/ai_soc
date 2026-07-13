@@ -389,7 +389,7 @@ jobs:
     env:
       NAMESPACE: ai-soc
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Pin release image in production overlay
         run: |
