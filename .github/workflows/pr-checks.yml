@@ -292,7 +292,7 @@ jobs:
 
       - name: Grype — second-opinion container scan
         id: grype
-        uses: anchore/scan-action@v3
+        uses: anchore/scan-action@v7
         with:
           image: ai-soc-api:ci
           fail-build: false
