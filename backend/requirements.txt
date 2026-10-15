@@ -50,7 +50,7 @@ asyncpg==0.31.0
 
 # ─── Notifications ─────────────────────────────────────────────────────────
 slack-sdk==3.33.5          # Slack webhook + Web API
-aiosmtplib==3.0.2          # async SMTP
+aiosmtplib==5.1.2          # async SMTP
 
 # ─── MITRE / Threat Intel ──────────────────────────────────────────────────
 stix2==3.0.1               # MITRE ATT&CK STIX parsing
